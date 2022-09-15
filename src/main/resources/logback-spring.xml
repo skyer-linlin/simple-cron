@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+
+
+    <property name="APP_NAME" value="simplecron"/>
+
+    <property name="pattern-color"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%highlight(%-5level)] [%cyan(%logger{36}.%M)][%file{20}:%method{20}:%line{4}] : %msg %n"/>
+
+
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <springProfile name="dev">
+        <property name="LOG_PATH"
+                  value="/Users/cicada/Exercism/kotlin/simplecron/logs/${APP_NAME}"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_PATH" value="/home/logs/${APP_NAME}"/>
+    </springProfile>
+
+    <appender name="CONSOLE_WITH_COLOR" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern-color}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DEBUG_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[lf-1][${APP_NAME}][%d{yyyy-MM-dd
+                HH:mm:ss.SSS}][%-5level][%thread][%file:%line] - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>        <!-- only log warn/error msg -->
+        </filter>
+    </appender>
+    <appender name="ERROR_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[lf-1][${APP_NAME}][%d{yyyy-MM-dd
+                HH:mm:ss.SSS}][%-5level][%thread][%file:%line] - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>warn</level>        <!-- only log warn/error msg -->
+        </filter>
+    </appender>
+    <appender name="NORMAL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[lf-1][${APP_NAME}][%d{yyyy-MM-dd
+                HH:mm:ss.SSS}][%-5level][%thread][%file:%line] - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>        <!-- only log warn/error msg -->
+        </filter>
+    </appender>
+
+
+    <logger name="javax.activation" level="WARN"/>
+    <logger name="javax.mail" level="WARN"/>
+    <logger name="javax.management.remote" level="WARN"/>
+    <logger name="javax.xml.bind" level="WARN"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="org.redisson" level="WARN"/>
+    <logger name="com.ryantenney" level="WARN"/>
+    <logger name="com.sun" level="WARN"/>
+    <logger name="com.zaxxer" level="WARN"/>
+    <logger name="io.netty" level="WARN"/>
+    <logger name="io.undertow" level="WARN"/>
+    <logger name="io.undertow.websockets.jsr" level="ERROR"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
+    <logger name="org.bson" level="WARN"/>
+    <logger name="org.hibernate.validator" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.cache" level="WARN"/>
+    <logger name="org.thymeleaf" level="WARN"/>
+    <logger name="org.xnio" level="WARN"/>
+    <logger name="springfox" level="WARN"/>
+    <logger name="sun.rmi" level="WARN"/>
+    <logger name="liquibase" level="WARN"/>
+    <logger name="LiquibaseSchemaResolver" level="INFO"/>
+    <logger name="springfox.documentation.schema.property" level="ERROR"/>
+    <logger name="sun.rmi.transport" level="WARN"/>
+    <!-- jhipster-needle-logback-add-log - JHipster will add a new log with level -->
+
+    <!-- https://logback.qos.ch/manual/configuration.html#shutdownHook and https://jira.qos.ch/browse/LOGBACK-1090 -->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="NORMAL_LOG"/>
+            <appender-ref ref="ERROR_LOG"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="debug">
+            <appender-ref ref="NORMAL_LOG"/>
+            <appender-ref ref="ERROR_LOG"/>
+            <appender-ref ref="DEBUG_LOG"/>
+            <!--<appender-ref ref="CONSOLE_WITH_COLOR"/>-->
+        </root>
+    </springProfile>
+</configuration>
