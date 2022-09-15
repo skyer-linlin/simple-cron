@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ToString
+@Document("jiemo_topic")
 public class Topic {
     @MongoId
     private Integer id;

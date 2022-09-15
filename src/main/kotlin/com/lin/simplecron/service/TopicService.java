@@ -8,11 +8,11 @@ import com.google.common.collect.Lists;
 import com.lin.simplecron.domain.Comment;
 import com.lin.simplecron.domain.Member;
 import com.lin.simplecron.domain.Topic;
+import com.lin.simplecron.repository.TopicRepository;
 import com.lin.simplecron.utils.ObjPropsCopyUtil;
 import com.lin.simplecron.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ public class TopicService {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private TopicRepository topicRepository;
 
     public CustomResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
@@ -99,15 +99,13 @@ public class TopicService {
 
     public List<Topic> readFile2Mongo() {
         List<Topic> topicList = resp2TopicList(applyCustomResponse());
-        for (Topic topic : topicList) {
-            mongoTemplate.save(topic, COLLECTION_NAME);
-        }
+        topicRepository.saveAll(topicList);
         log.info("入库 {} 条 topic, 内容: {}", topicList.size(), JSONUtil.toJsonPrettyStr(topicList));
         return topicList;
     }
 
     public List<Topic> getAllTopics() {
-        List<Topic> topicList = mongoTemplate.findAll(Topic.class, COLLECTION_NAME);
+        List<Topic> topicList = topicRepository.findAll();
         return topicList;
     }
 }
