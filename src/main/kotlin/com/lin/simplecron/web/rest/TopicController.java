@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,5 +55,11 @@ public class TopicController {
     @GetMapping("/topics/groups/{groupId}")
     public ResponseEntity<List<Topic>> findTopicsByGroupId(@PathVariable Integer groupId) {
         return ResponseEntity.ok(topicService.findTopicsByGroupId(groupId));
+    }
+
+    @Operation(summary = "按 groupId 删除最新一条主题")
+    @DeleteMapping("/topic/group/{groupId}")
+    public ResponseEntity<Optional<Topic>> deleteGroupLatestTopic(@PathVariable @Parameter(example = "42920") Integer groupId) {
+        return ResponseEntity.ok(topicService.deleteGroupLatestTopic(groupId));
     }
 }

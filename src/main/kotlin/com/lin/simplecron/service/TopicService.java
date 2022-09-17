@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +48,9 @@ public class TopicService {
     private TopicRepository topicRepository;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private ImService imService;
+
 
     public CustomResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
@@ -89,7 +93,7 @@ public class TopicService {
         for (CommentVO commentVO : topicVO.getComments()) {
             Comment comment = new Comment();
             ObjPropsCopyUtil.copyProperties(commentVO, comment);
-            comment.setContentUrlTitles(commentVO.getContentUrlTitles());
+            comment.setContentUrlTitles(commentVO.getContentUrlTitles().stream().map(ContentUrlVO::getUrl).collect(Collectors.toList()));
             comment.setMultimedia(commentVO.getMultimedia());
             commentList.add(comment);
         }
@@ -124,8 +128,14 @@ public class TopicService {
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> topicList = topicRepository.findAll(sort);
         for (Topic topic : topicList) {
-            String preStr = StrUtil.subPre(topic.getContent(), 6);
-            topic.setContentVisitor(preStr + topic.getContentVisitor());
+            // 有权限要求的圈子,content 字段只有前几十个字,剩余内容在ContentVisitor字段,无门槛圈子,主题内容都在 content 字段
+            if (StrUtil.isBlank(topic.getContentVisitor())) {
+                topic.setContentVisitor(topic.getContent());
+            } else {
+                String preStr = StrUtil.subPre(topic.getContent(), 6);
+                topic.setContentVisitor(preStr + topic.getContentVisitor());
+            }
+
         }
         return topicList;
     }
@@ -135,13 +145,37 @@ public class TopicService {
         return topicRepository.findById(topicId);
     }
 
+    @Transactional
     public List<Topic> fetchTopicUpdate(Integer groupId) {
         CustomResponse customResponse = fetchTopicData(groupId);
         List<TopicVO> topicVOList = customResponse.getData().getTopics();
+        String groupName = topicVOList.get(0).getGroup().getTitle();
         List<Topic> topicList = topicVOList.stream().map(this::topicVO2Topic).collect(Collectors.toList());
-
+        // 通过查找最近更新的主题, 比较是否有更新
+        Optional<Topic> latestTopic = findGroupLatestTopic(groupId);
+        latestTopic.ifPresent(lt -> {
+            long newTopicCount = topicList.stream().filter(topic -> topic.getCreateTime().isAfter(lt.getCreateTime())).count();
+            log.info("你关注的芥末圈 {} 有 {} 条新主题了", groupName, newTopicCount);
+            topicList.stream().filter(topic -> topic.getCreateTime().isAfter(lt.getCreateTime()))
+                .max(Comparator.comparing(Topic::getCreateTime)).ifPresent(topic -> {
+                        if (newTopicCount > 0) {
+                            // 发送 im 通知和邮件通知
+                            imService.sendImMsg(StrUtil.format("你关注的芥末圈 💥{}💥 有 {} 条新主题了, 内容:\n\n{}\n\n---完---",
+                                groupName, newTopicCount, topic.getContent()));
+                        }
+                    }
+                );
+        });
         List<Topic> result = topicRepository.saveAll(topicList);
+        log.info("对 {} 芥末圈 {} 更新主题", groupName, groupId);
         return result;
+    }
+
+    public Optional<Topic> findGroupLatestTopic(Integer groupId) {
+        Example<Topic> example = Example.of(new Topic().setGroupId(groupId));
+        List<Topic> topicList = topicRepository.findAll(example);
+        Optional<Topic> max = topicList.stream().max(Comparator.comparing(Topic::getCreateTime));
+        return max;
     }
 
     @Nullable
@@ -184,5 +218,15 @@ public class TopicService {
         Topic topic = new Topic().setGroupId(groupId);
         List<Topic> groupTopics = topicRepository.findAll(Example.of(topic));
         return groupTopics;
+    }
+
+
+    public Optional<Topic> deleteGroupLatestTopic(Integer groupId) {
+        Optional<Topic> groupLatestTopic = findGroupLatestTopic(groupId);
+        groupLatestTopic.ifPresent(topic -> {
+            topicRepository.deleteById(topic.getId());
+            log.warn("删除 {} 圈子 id为 {} 主题", groupId, topic.getId());
+        });
+        return groupLatestTopic;
     }
 }

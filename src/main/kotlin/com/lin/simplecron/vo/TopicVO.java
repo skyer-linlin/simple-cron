@@ -34,7 +34,7 @@ public class TopicVO {
   private String richContent;
 
   @JsonProperty("content_url_titles")
-  private List<String> contentUrlTitles;
+  private List<ContentUrlVO> contentUrlTitles;
 
   private List<MutiMediaVO> multimedia;
   private String money;

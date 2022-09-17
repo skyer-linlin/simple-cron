@@ -19,7 +19,11 @@
       <div th:text="发布于 + ${topic.createTime}" class="createTime"></div>
       <pre th:text="${topic.contentVisitor}"></pre>
       <div th:if="${topic.multimedia.size() > 0}">
-        <a th:each="link:${topic.multimedia}" th:href="${link}" target="_blank">图片链接</a>
+        <ul th:each="link:${topic.multimedia}">
+          <li>
+            <a th:href="${link}" target="_blank">图片链接</a>
+          </li>
+        </ul>
       </div>
       <div th:if="${topic.commentCount>0}">
         <hr class="hr-solid-content" data-content="评论区">
