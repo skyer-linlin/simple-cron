@@ -17,14 +17,14 @@ spring:
     mongodb:
       database: simple_cron
       host: 192.168.31.20
-  devtools:
-    restart:
-      enabled: true
-      additional-paths: src/main/kotlin
   thymeleaf:
-    cache: true
-    enabled: true
+    cache: false
     mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html #模板后缀
+    encoding: UTF-8 #编码
+    check-template-location: true
+
 
   application:
     name: simplecron

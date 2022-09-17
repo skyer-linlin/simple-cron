@@ -1,7 +1,10 @@
 package com.lin.simplecron.web.rest;
 
+import com.lin.simplecron.service.TopicService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * com.lin.simplecron.controller
@@ -11,9 +14,17 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @since
  */
 @Controller
+@Tag(name = "主题页面", description = "topic 相关页面提供数据")
 public class JiemoController {
-  @GetMapping("/jiemo")
-  public String index() {
-    return "index";
-  }
+    private final TopicService topicService;
+
+    public JiemoController(TopicService topicService) {
+        this.topicService = topicService;
+    }
+
+    @RequestMapping("/jiemo")
+    public String jiemo(Model model) {
+        model.addAttribute("topics", topicService.findAll());
+        return "jiemo";
+    }
 }

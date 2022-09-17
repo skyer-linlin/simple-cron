@@ -1,0 +1,9 @@
+spring:
+  thymeleaf:
+    cache: false
+
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/kotlin
+      exclude: WEB-INF/**

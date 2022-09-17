@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>芥末圈备份页</title>
+  <!--  引入 css 文件-->
+  <link th:href="@{/css/jiemo.css}" rel="stylesheet">
+  <!--  <script type="text/javascript" src="@{/js/action.js}"></script>-->
+</head>
+<body>
+<div class="div1">
+  <h1>芥末圈备份页</h1>
+  <h2 th:text="'下面是抓取到的芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
+  <table>
+
+    <tr th:each="topic: ${topics}">
+      <hr class="hr-twill-colorful">
+      <div th:text="${topic.member.nickname}" class="name"></div>
+      <div th:text="发布于 + ${topic.createTime}" class="createTime"></div>
+      <pre th:text="${topic.contentVisitor}"></pre>
+      <div th:if="${topic.multimedia.size() > 0}">
+        <a th:each="link:${topic.multimedia}" th:href="${link}" target="_blank">图片链接</a>
+      </div>
+      <div th:if="${topic.commentCount>0}">
+        <hr class="hr-solid-content" data-content="评论区">
+        <div th:each="comment:${topic.comments}" class="comment">
+          <div class="name" th:text="${comment.nickname}"></div>
+          <div th:text="' : '+${comment.content}"></div>
+          <div class="clear"></div>
+          <div class="createTime" th:text="${comment.createTime}"></div>
+        </div>
+      </div>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

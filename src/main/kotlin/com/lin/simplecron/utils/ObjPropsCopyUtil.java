@@ -2,7 +2,6 @@ package com.lin.simplecron.utils;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ReflectUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -27,7 +26,6 @@ public class ObjPropsCopyUtil {
      * @param <S>
      * @param <T>
      */
-    @SneakyThrows
     public static <S, T> void copyProperties(S source, T target) {
         Class<?> srcClass = source.getClass();
         Class<?> targetClass = target.getClass();
@@ -60,8 +58,12 @@ public class ObjPropsCopyUtil {
                         }
                     }
                 } catch (Exception e) {
-                    log.error("unknown filed, source filed: {}, type: {}, src field value: {}, target field: {}, type: {}",
-                        srcField.getName(), srcField.getType(), srcField.get(source), targetField.getName(), targetField.getType());
+                    try {
+                        log.error("unknown filed, source filed: {}, type: {}, src field value: {}, target field: {}, type: {}",
+                            srcField.getName(), srcField.getType(), srcField.get(source), targetField.getName(), targetField.getType());
+                    } catch (IllegalAccessException ex) {
+                        ex.printStackTrace();
+                    }
                     e.printStackTrace();
                 }
             }

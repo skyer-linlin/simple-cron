@@ -2,6 +2,7 @@ package com.lin.simplecron.domain;
 
 import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -22,10 +23,12 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @Document("jiemo_topic")
+@Schema(name = "芥末圈主题", description = "芥末圈主题定义")
 public class Topic {
     @MongoId
     private Integer id;
 
+    @Schema(description = "圈子 id", required = true, example = "41228")
     private Integer groupId;
 
     private Integer groupMemberId;

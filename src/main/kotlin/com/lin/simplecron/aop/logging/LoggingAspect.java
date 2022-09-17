@@ -27,7 +27,8 @@ public class LoggingAspect {
     @Pointcut(
         "within(@org.springframework.stereotype.Repository *)"
             + " || within(@org.springframework.stereotype.Service *)"
-            + " || within(@org.springframework.web.bind.annotation.RestController *)")
+            + " || within(@org.springframework.web.bind.annotation.RestController *)"
+            + " || within(@org.springframework.stereotype.Controller *)")
     public void springBeanPointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }

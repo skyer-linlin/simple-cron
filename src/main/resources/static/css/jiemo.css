@@ -1,0 +1,89 @@
+body {
+    background: #2D333B !important;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: #adbac7 !important;
+    font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+}
+
+.div1 {
+    margin: 0 auto;
+    width: 45%;
+}
+
+strong {
+    font-weight: bold;
+    background-color: greenyellow;
+}
+
+pre {
+    font-size: 17px;
+    font-family: sans-serif;
+    font-weight: 500;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* 现代浏览器only */
+.hr-twill-colorful {
+    border: 0;
+    padding: 3px;
+    background: linear-gradient(135deg, red, orange, green, blue, purple);
+    --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);
+    -webkit-mask-image: var(--mask-image);
+    mask-image: var(--mask-image);
+}
+
+.hr-solid-content {
+    color: #3c5980;
+    border: 0;
+    font-size: 12px;
+    padding: 1em 0;
+    position: relative;
+}
+
+.hr-solid-content::before {
+    content: attr(data-content);
+    position: absolute;
+    padding: 0 1ch;
+    line-height: 1px;
+    border: solid #3e3e45;
+    border-width: 0 99vw;
+    width: fit-content;
+    /* for 不支持fit-content浏览器 */
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+a {
+    color: #D4E5F4 !important;
+}
+
+.name {
+    color: #D3D3D3;
+    font-weight: 600;
+    font-synthesis: style;
+    font-size: 16px;
+    float: left;
+}
+
+.createTime {
+    color: #8590a6;
+    display: block;
+    font-size: 14px;
+    clear: both;
+}
+
+.comment {
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    padding: 3px 25px 5px;
+    font-size: 16px;
+}
+
+.clear {
+    clear: both
+}
+
