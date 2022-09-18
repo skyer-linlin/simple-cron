@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.lin</groupId>
     <artifactId>simplecron</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>simple-cron</name>
     <description>simple-cron</description>
     <properties>
@@ -141,6 +141,7 @@
     </dependencies>
 
     <build>
+        <finalName>simple-cron</finalName>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
