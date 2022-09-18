@@ -50,6 +50,8 @@ public class TopicService {
     private RestTemplate restTemplate;
     @Autowired
     private ImService imService;
+    // @Autowired
+    // private MailService mailService;
 
 
     public CustomResponse applyCustomResponse() {
@@ -160,8 +162,16 @@ public class TopicService {
                 .max(Comparator.comparing(Topic::getCreateTime)).ifPresent(topic -> {
                         if (newTopicCount > 0) {
                             // 发送 im 通知和邮件通知
-                            imService.sendImMsg(StrUtil.format("你关注的芥末圈 💥{}💥 有 {} 条新主题了, 内容:\n\n{}\n\n---完---",
+                            String msgTemplate = """
+                                你关注的芥末圈 💥{}💥 有 {} 条新主题了, 内容:
+                                                                
+                                {}
+                                                                
+                                ---完---
+                                """;
+                            imService.sendImMsg(StrUtil.format(msgTemplate,
                                 groupName, newTopicCount, topic.getContent()));
+                            // mailService.notice(StrUtil.format("你关注的芥末圈 💥{}💥 有 {} 条新主题了", groupName, newTopicCount), topic.getContent());
                         }
                     }
                 );

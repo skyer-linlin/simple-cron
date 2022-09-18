@@ -31,3 +31,24 @@ spring:
 
   profiles:
     active: dev
+
+#  mail:
+#    host: smtp.office365.com
+#    username: fklvch@outlook.com
+#    password: =b,x@]pfw_7G-2<O
+#    default-encoding: UTF-8
+#    port: 587
+#    properties:
+#      mail:
+#        smtp:
+#          port: 587
+#          auth: true
+#          starttls:
+#            enable: true
+#            required: true
+#    protocol: smtps
+
+  jackson:
+    time-zone: GMT+8
+
+
