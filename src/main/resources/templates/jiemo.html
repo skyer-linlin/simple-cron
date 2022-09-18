@@ -10,6 +10,9 @@
 <body>
 <div class="div1">
   <h1>芥末圈备份页</h1>
+  <div>
+    <a th:href="'http://'+${uriPrefix}+'/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'" target="_blank">swagger地址</a>
+  </div>
   <h2 th:text="'下面是抓取到的芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
   <table>
 

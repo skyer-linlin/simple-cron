@@ -2,6 +2,7 @@ package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.service.TopicService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class JiemoController {
     private final TopicService topicService;
 
+    @Value(value = "${server.host}")
+    private String host;
+
+    @Value(value = "${server.port}")
+    private Integer port;
+
     public JiemoController(TopicService topicService) {
         this.topicService = topicService;
     }
@@ -25,6 +32,7 @@ public class JiemoController {
     @RequestMapping("/jiemo")
     public String jiemo(Model model) {
         model.addAttribute("topics", topicService.findAll());
+        model.addAttribute("uriPrefix", host + ":" + port);
         return "jiemo";
     }
 }
