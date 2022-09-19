@@ -2,6 +2,7 @@ package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.domain.Topic;
 import com.lin.simplecron.service.TopicService;
+import com.lin.simplecron.task.ScratchJiemoTask;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,8 @@ import java.util.Optional;
 public class TopicController {
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private ScratchJiemoTask scratchJiemoTask;
 
     @GetMapping("/readFile2Mongo")
     public ResponseEntity<List<Topic>> readFile2Mongo() {
@@ -61,5 +64,12 @@ public class TopicController {
     @DeleteMapping("/topic/group/{groupId}")
     public ResponseEntity<Optional<Topic>> deleteGroupLatestTopic(@PathVariable @Parameter(example = "42920") Integer groupId) {
         return ResponseEntity.ok(topicService.deleteGroupLatestTopic(groupId));
+    }
+
+    @Operation(summary = "执行一次定时任务更新")
+    @PostMapping("/topics/task/fetchAll")
+    public ResponseEntity<String> findTopicsByGroupId() {
+        scratchJiemoTask.scheduleScratchTask();
+        return ResponseEntity.ok("更新完成");
     }
 }

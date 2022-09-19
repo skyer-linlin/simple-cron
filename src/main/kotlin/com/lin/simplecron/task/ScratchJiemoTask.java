@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class ScratchJiemo {
+public class ScratchJiemoTask {
     private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920);
     @Autowired
     private TopicService topicService;
