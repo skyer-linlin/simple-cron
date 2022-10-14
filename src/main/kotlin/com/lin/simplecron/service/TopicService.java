@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class TopicService {
     private static final String COLLECTION_NAME = "jiemo_topic";
     private static String JIEMO_TOPIC_URL =
-        "https://api320.jiemo100.com/topic/index/index?login_token=darling_129108d8_0_9f5ca85e20fdd2166492e04132e33399&group_id={groupId}&page=1&page_size=10";
+        "https://api320.jiemo100.com/topic/index/index?login_token=darling_829108d8_0_285071c6715ce2f9466ecf72630c0e72&group_id={groupId}&page=1&page_size=10";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
