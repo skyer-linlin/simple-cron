@@ -39,9 +39,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TopicService {
-    private static final String COLLECTION_NAME = "jiemo_topic";
     private static String JIEMO_TOPIC_URL =
-        "https://api320.jiemo100.com/topic/index/index?login_token=darling_829108d8_0_285071c6715ce2f9466ecf72630c0e72&group_id={groupId}&page=1&page_size=10";
+        "https://api320.jiemo100.com/topic/index/index?login_token={loginToken}&group_id={groupId}&page=1&page_size=10";
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -50,9 +49,8 @@ public class TopicService {
     private RestTemplate restTemplate;
     @Autowired
     private ImService imService;
-    // @Autowired
-    // private MailService mailService;
-
+    @Autowired
+    private LoginTokenService loginTokenService;
 
     public CustomResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
@@ -137,7 +135,6 @@ public class TopicService {
                 String preStr = StrUtil.subPre(topic.getContent(), 6);
                 topic.setContentVisitor(preStr + topic.getContentVisitor());
             }
-
         }
         return topicList;
     }
@@ -192,7 +189,8 @@ public class TopicService {
     private CustomResponse fetchTopicData(Integer groupId) {
         HttpHeaders httpHeaders = setRequestHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<CustomResponse> responseEntity = restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, CustomResponse.class, groupId);
+        String currentLoginToken = loginTokenService.getCurrentLoginToken();
+        ResponseEntity<CustomResponse> responseEntity = restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, CustomResponse.class, currentLoginToken, groupId);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity.getBody();
         } else {
