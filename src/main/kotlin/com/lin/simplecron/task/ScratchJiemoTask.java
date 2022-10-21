@@ -28,7 +28,7 @@ public class ScratchJiemoTask {
      * 从早 8 到凌晨每2 小时的 15 分运行一次
      */
     @SneakyThrows
-    @Scheduled(cron = "0 23 0,8,10,12,14,16,18,20,22 * * ? ")
+    @Scheduled(cron = "0 7 0,8,10,12,14,16,18,20,22 * * ? ")
     public void scheduleScratchTask() {
         log.info("开始抓取定时任务");
         for (Integer groupId : groupIdList) {

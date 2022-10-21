@@ -126,7 +126,7 @@
             <appender-ref ref="NORMAL_LOG"/>
             <appender-ref ref="ERROR_LOG"/>
             <appender-ref ref="DEBUG_LOG"/>
-            <appender-ref ref="CONSOLE_WITH_COLOR"/>
+            <!--<appender-ref ref="CONSOLE_WITH_COLOR"/>-->
         </root>
     </springProfile>
 </configuration>
