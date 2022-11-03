@@ -24,14 +24,18 @@ spring:
     encoding: UTF-8 #编码
     check-template-location: true
 
-
   application:
     name: simplecron
 
   profiles:
     active: dev
 
-#  mail:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  #  mail:
 #    host: smtp.office365.com
 #    username: fklvch@outlook.com
 #    password: =b,x@]pfw_7G-2<O
@@ -49,3 +53,9 @@ spring:
 
   jackson:
     time-zone: GMT+8
+
+minio:
+  bucketName: simple-cron
+  accessKey: myminioadmin
+  secretKey: myminioadmin
+  endpoint: http://192.168.31.20:9000/
