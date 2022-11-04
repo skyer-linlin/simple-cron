@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +49,9 @@ public class CoinGlassService {
 
 
     public List<CoinglassFundingRate> fetchFundingRate() {
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalTime now = LocalTime.now();
+        LocalTime nowTime = LocalTime.of(now.getHour(), now.getMinute(), now.getSecond());
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), nowTime);
         ResponseEntity<String> entity = restTemplate.getForEntity(COINGLASS_API_URL, String.class);
         String jsonStr = entity.getBody();
         List<CoinglassFundingRate> list = fundingRateVo2Domain(jsonStr, dateTime);
