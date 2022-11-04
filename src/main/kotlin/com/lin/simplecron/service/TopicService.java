@@ -15,6 +15,7 @@ import com.lin.simplecron.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
@@ -45,6 +46,7 @@ public class TopicService {
     private ObjectMapper objectMapper;
     @Autowired
     private TopicRepository topicRepository;
+    @Qualifier("NoProxyRestTemplate")
     @Autowired
     private RestTemplate restTemplate;
     @Autowired

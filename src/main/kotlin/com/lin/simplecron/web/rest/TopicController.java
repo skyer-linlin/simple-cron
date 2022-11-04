@@ -69,7 +69,7 @@ public class TopicController {
     @Operation(summary = "执行一次定时任务更新")
     @PostMapping("/topics/task/fetchAll")
     public ResponseEntity<String> findTopicsByGroupId() {
-        scratchJiemoTask.scheduleScratchTask();
+        scratchJiemoTask.scheduleScratchJiemoTopicTask();
         return ResponseEntity.ok("更新完成");
     }
 }

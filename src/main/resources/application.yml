@@ -10,7 +10,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     open-in-view: true
 
   data:
@@ -36,23 +36,32 @@ spring:
       max-request-size: 100MB
 
   #  mail:
-#    host: smtp.office365.com
-#    username: fklvch@outlook.com
-#    password: =b,x@]pfw_7G-2<O
-#    default-encoding: UTF-8
-#    port: 587
-#    properties:
-#      mail:
-#        smtp:
-#          port: 587
-#          auth: true
-#          starttls:
-#            enable: true
-#            required: true
-#    protocol: smtps
+  #    host: smtp.office365.com
+  #    username: fklvch@outlook.com
+  #    password: =b,x@]pfw_7G-2<O
+  #    default-encoding: UTF-8
+  #    port: 587
+  #    properties:
+  #      mail:
+  #        smtp:
+  #          port: 587
+  #          auth: true
+  #          starttls:
+  #            enable: true
+  #            required: true
+  #    protocol: smtps
 
   jackson:
     time-zone: GMT+8
+    deserialization:
+      # 遇到未知属性就解析失败
+      failOnUnknownProperties: false
+      # 遇到空字符串对象解析为 null
+      acceptEmptyStringAsNullObject: true
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
+
 
 minio:
   bucketName: simple-cron
