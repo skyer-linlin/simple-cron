@@ -114,3 +114,5 @@ build/
 *.iml
 
 /logs
+.jpb
+/.jpb/jpb-settings.xml
