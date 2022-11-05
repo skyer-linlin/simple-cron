@@ -27,7 +27,7 @@ import java.util.Objects;
 public class CoinglassCmarginFundingRate implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /**
      * symbol
