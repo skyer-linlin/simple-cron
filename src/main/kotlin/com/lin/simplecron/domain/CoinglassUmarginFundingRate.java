@@ -23,8 +23,8 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Accessors(chain = true)
-@Table(name = "coinglass_funding_rate")
-public class CoinglassFundingRate implements Serializable {
+@Table(name = "coinglass_umargin_funding_rate")
+public class CoinglassUmarginFundingRate implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -68,8 +68,8 @@ public class CoinglassFundingRate implements Serializable {
     /**
      * bitfinex
      */
-    @Column(name = "bitfinex")
-    private Double bitfinex;
+    @Column(name = "gate")
+    private Double gate;
 
     /**
      * deribit
@@ -95,13 +95,16 @@ public class CoinglassFundingRate implements Serializable {
     @Column(name = "datetime")
     private LocalDateTime datetime;
 
+    @Column(name = "u_price")
+    private Double uPrice;
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
-        CoinglassFundingRate that = (CoinglassFundingRate) o;
+        CoinglassUmarginFundingRate that = (CoinglassUmarginFundingRate) o;
         return symbol != null && Objects.equals(symbol, that.symbol);
     }
 

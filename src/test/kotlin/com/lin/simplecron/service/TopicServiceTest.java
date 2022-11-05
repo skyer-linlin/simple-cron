@@ -1,6 +1,6 @@
 package com.lin.simplecron.service;
 
-import com.lin.simplecron.vo.CustomResponse;
+import com.lin.simplecron.vo.JiemoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ class TopicServiceTest {
 
   @Test
   void applyCustomResponse() {
-    CustomResponse customResponse = topicService.applyCustomResponse();
+    JiemoResponse customResponse = topicService.applyCustomResponse();
     Assertions.assertEquals(10, customResponse.getData().getTopics().size());
   }
 }

@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class CexFundingRateVO {
     private Double rate;
+    private Double predictedRate;
     private Long nextFundingTime;
     private String exchangeName;
     private Integer l;

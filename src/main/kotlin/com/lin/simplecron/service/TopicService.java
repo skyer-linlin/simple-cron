@@ -54,13 +54,13 @@ public class TopicService {
     @Autowired
     private LoginTokenService loginTokenService;
 
-    public CustomResponse applyCustomResponse() {
+    public JiemoResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
 
         String str = FileUtil.readString("/Users/cicada/Downloads/jiemo_content_fetch/zhoulang_0913.json", StandardCharsets.UTF_8);
-        CustomResponse response = null;
+        JiemoResponse response = null;
         try {
-            response = objectMapper.readValue(str, CustomResponse.class);
+            response = objectMapper.readValue(str, JiemoResponse.class);
         } catch (JsonProcessingException e) {
             log.error("Error parsing json");
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class TopicService {
      * @param ctResp
      * @return
      */
-    public List<Topic> resp2TopicList(CustomResponse ctResp) {
+    public List<Topic> resp2TopicList(JiemoResponse ctResp) {
         List<TopicVO> topicVOS = ctResp.getData().getTopics();
         List<Topic> topicList = new ArrayList<>();
         for (TopicVO topicVO : topicVOS) {
@@ -148,7 +148,7 @@ public class TopicService {
 
     @Transactional
     public List<Topic> fetchTopicUpdate(Integer groupId) {
-        CustomResponse customResponse = fetchTopicData(groupId);
+        JiemoResponse customResponse = fetchTopicData(groupId);
         List<TopicVO> topicVOList = customResponse.getData().getTopics();
         String groupName = topicVOList.get(0).getGroup().getTitle();
         List<Topic> topicList = topicVOList.stream().map(this::topicVO2Topic).collect(Collectors.toList());
@@ -188,11 +188,11 @@ public class TopicService {
     }
 
     @Nullable
-    private CustomResponse fetchTopicData(Integer groupId) {
+    private JiemoResponse fetchTopicData(Integer groupId) {
         HttpHeaders httpHeaders = setRequestHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         String currentLoginToken = loginTokenService.getCurrentLoginToken();
-        ResponseEntity<CustomResponse> responseEntity = restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, CustomResponse.class, currentLoginToken, groupId);
+        ResponseEntity<JiemoResponse> responseEntity = restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, JiemoResponse.class, currentLoginToken, groupId);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity.getBody();
         } else {

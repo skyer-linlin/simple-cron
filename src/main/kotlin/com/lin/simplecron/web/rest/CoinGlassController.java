@@ -1,6 +1,8 @@
 package com.lin.simplecron.web.rest;
 
-import com.lin.simplecron.domain.CoinglassFundingRate;
+import cn.hutool.core.lang.Pair;
+import com.lin.simplecron.domain.CoinglassCmarginFundingRate;
+import com.lin.simplecron.domain.CoinglassUmarginFundingRate;
 import com.lin.simplecron.service.CoinGlassService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class CoinGlassController {
     private CoinGlassService coinGlassService;
 
     @GetMapping("/fundingRate/current")
-    public ResponseEntity<List<CoinglassFundingRate>> fetchFundingRate() {
+    public ResponseEntity<Pair<List<CoinglassUmarginFundingRate>, List<CoinglassCmarginFundingRate>>> fetchFundingRate() {
         return ResponseEntity.ok(coinGlassService.fetchFundingRate());
     }
 
@@ -39,7 +41,7 @@ public class CoinGlassController {
     }
 
     @GetMapping("/fundingrate/count")
-    public ResponseEntity<Long> countFundingRate() {
+    public ResponseEntity<Pair<Long, Long>> countFundingRate() {
         return ResponseEntity.ok(coinGlassService.countFundingRate());
     }
 

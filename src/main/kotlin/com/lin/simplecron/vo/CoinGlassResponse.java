@@ -10,8 +10,9 @@ import lombok.Data;
  * @since
  */
 @Data
-public class CustomResponse {
-  private int code;
-  private String message;
-  private DataVO data;
+public class CoinGlassResponse<T> {
+    private String code;
+    private String msg;
+    private T data;
+    private Boolean success;
 }
