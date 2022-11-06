@@ -42,7 +42,7 @@ public class ScratchJiemoTask {
             log.info("抓取 {} 主题中", groupId);
             topicService.fetchTopicUpdate(groupId);
             log.info("抓取 {} 主题完成", groupId);
-            Thread.sleep(5_000);
+            Thread.sleep(10_000);
         }
     }
 
