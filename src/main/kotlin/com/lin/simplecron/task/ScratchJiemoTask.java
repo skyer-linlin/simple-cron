@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @EnableAsync
 public class ScratchJiemoTask {
-    private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012);
+    private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012, 34555);
     @Autowired
     private TopicService topicService;
     @Autowired
@@ -42,7 +42,7 @@ public class ScratchJiemoTask {
             log.info("抓取 {} 主题中", groupId);
             topicService.fetchTopicUpdate(groupId);
             log.info("抓取 {} 主题完成", groupId);
-            Thread.sleep(10_000);
+            Thread.sleep(7_000);
         }
     }
 
