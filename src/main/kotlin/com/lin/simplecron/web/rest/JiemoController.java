@@ -1,6 +1,7 @@
 package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.service.TopicService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -30,9 +31,11 @@ public class JiemoController {
     }
 
     @RequestMapping("/jiemo")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public String jiemo(Model model) {
         model.addAttribute("topics", topicService.findAll());
         model.addAttribute("uriPrefix", host + ":" + port);
+        model.addAttribute("host", host);
         return "jiemo";
     }
 }

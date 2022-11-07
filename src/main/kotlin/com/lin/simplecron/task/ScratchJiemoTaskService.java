@@ -6,6 +6,7 @@ import com.lin.simplecron.service.TopicService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,20 +23,20 @@ import java.util.List;
  */
 @Component
 @Slf4j
-@EnableAsync
-public class ScratchJiemoTask {
+public class ScratchJiemoTaskService {
     private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012, 34555);
-    @Autowired
-    private TopicService topicService;
-    @Autowired
-    private CoinGlassService coinGlassService;
+    private final TopicService topicService;
+    private final CoinGlassService coinGlassService;
+
+    public ScratchJiemoTaskService(TopicService topicService, CoinGlassService coinGlassService) {
+        this.topicService = topicService;
+        this.coinGlassService = coinGlassService;
+    }
 
     /**
      *
      */
     @SneakyThrows
-    @Scheduled(cron = "0 7 * * * ? ")
-    @Async("scheduledExecutor")
     public void scheduleScratchJiemoTopicTask() {
         log.info("开始抓取芥末圈定时任务");
         for (Integer groupId : groupIdList) {
@@ -50,8 +51,6 @@ public class ScratchJiemoTask {
      *
      */
     @SneakyThrows
-    @Scheduled(cron = "0 * * * * ? ")
-    @Async("scheduledExecutor")
     public void scheduleScratchFundingRateTask() {
         log.info("开始抓取资金费率定时任务");
         coinGlassService.saveCurrentFundingRate();

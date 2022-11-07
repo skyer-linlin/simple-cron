@@ -3,6 +3,7 @@ package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.dto.FileDto;
 import com.lin.simplecron.service.MinioService;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,13 @@ public class MinioController {
     }
 
     @PostMapping(value = "/upload")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Object> upload(@ModelAttribute FileDto request) {
         return ResponseEntity.ok().body(minioService.uploadFile(request));
     }
 
     @GetMapping(value = "/**")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Object> getFile(HttpServletRequest request) throws IOException {
         String pattern = (String) request.getAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE);
         String filename = new AntPathMatcher().extractPathWithinPattern(pattern, request.getServletPath());
@@ -49,7 +52,6 @@ public class MinioController {
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(IOUtils.toByteArray(minioService.getObject(filename)));
     }
-
 
 
 }

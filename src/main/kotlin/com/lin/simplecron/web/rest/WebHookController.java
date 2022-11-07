@@ -2,6 +2,7 @@ package com.lin.simplecron.web.rest;
 
 import cn.hutool.core.util.StrUtil;
 import com.lin.simplecron.service.ImService;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class WebHookController {
     private ImService imService;
 
     @PostMapping("/notify/myTelegramBot")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<String> notifyLarrySpeakGroup(@RequestBody String msg) {
         if (StrUtil.isNotBlank(msg)) {
             msg = msg.trim();

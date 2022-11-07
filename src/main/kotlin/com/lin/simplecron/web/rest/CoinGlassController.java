@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Pair;
 import com.lin.simplecron.domain.CoinglassCmarginFundingRate;
 import com.lin.simplecron.domain.CoinglassUmarginFundingRate;
 import com.lin.simplecron.service.CoinGlassService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +30,26 @@ public class CoinGlassController {
     @Autowired
     private CoinGlassService coinGlassService;
 
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/fundingRate/current")
     public ResponseEntity<Pair<List<CoinglassUmarginFundingRate>, List<CoinglassCmarginFundingRate>>> fetchFundingRate() {
         return ResponseEntity.ok(coinGlassService.fetchFundingRate());
     }
 
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @PostMapping("/fundingRate/save")
     public ResponseEntity<LocalDateTime> saveFundingRate() {
         coinGlassService.saveCurrentFundingRate();
         return ResponseEntity.ok(LocalDateTime.now());
     }
 
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/fundingrate/count")
     public ResponseEntity<Pair<Long, Long>> countFundingRate() {
         return ResponseEntity.ok(coinGlassService.countFundingRate());
     }
 
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/time")
     public ResponseEntity<String> fetchTime() {
         return ResponseEntity.ok(coinGlassService.fetchTime());

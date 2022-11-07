@@ -2,7 +2,8 @@ package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.domain.Topic;
 import com.lin.simplecron.service.TopicService;
-import com.lin.simplecron.task.ScratchJiemoTask;
+import com.lin.simplecron.task.ScratchJiemoTaskService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,9 +28,10 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
     @Autowired
-    private ScratchJiemoTask scratchJiemoTask;
+    private ScratchJiemoTaskService scratchJiemoTask;
 
     @GetMapping("/readFile2Mongo")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<List<Topic>> readFile2Mongo() {
         List<Topic> topicList = topicService.readFile2Mongo();
         return ResponseEntity.ok(topicList);
@@ -37,24 +39,28 @@ public class TopicController {
 
 
     @Operation(summary = "获取所有主题")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics")
     public ResponseEntity<List<Topic>> getAllTopics() {
         return ResponseEntity.ok(topicService.findAll());
     }
 
     @GetMapping("/topics/{topicId}")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Optional<Topic>> getTopic(@PathVariable Integer topicId) {
         Optional<Topic> topic = topicService.findOne(topicId);
         return ResponseEntity.ok(topic);
     }
 
     @Operation(summary = "获取主题更新")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics/update/{groupId}")
     public ResponseEntity<List<Topic>> fetchTopicUpdate(@PathVariable @Parameter(example = "37064") Integer groupId) {
         return ResponseEntity.ok(topicService.fetchTopicUpdate(groupId));
     }
 
     @Operation(summary = "按 groupId 查找主题")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics/groups/{groupId}")
     public ResponseEntity<List<Topic>> findTopicsByGroupId(@PathVariable Integer groupId) {
         return ResponseEntity.ok(topicService.findTopicsByGroupId(groupId));
@@ -62,12 +68,14 @@ public class TopicController {
 
     @Operation(summary = "按 groupId 删除最新一条主题")
     @DeleteMapping("/topic/group/{groupId}")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Optional<Topic>> deleteGroupLatestTopic(@PathVariable @Parameter(example = "42920") Integer groupId) {
         return ResponseEntity.ok(topicService.deleteGroupLatestTopic(groupId));
     }
 
     @Operation(summary = "执行一次定时任务更新")
     @PostMapping("/topics/task/fetchAll")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<String> findTopicsByGroupId() {
         scratchJiemoTask.scheduleScratchJiemoTopicTask();
         return ResponseEntity.ok("更新完成");
