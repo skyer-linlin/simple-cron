@@ -40,9 +40,14 @@
             </exclusions>
         </dependency>
         <!-- Jetty适合长连接应用，就是聊天类的长连接 -->
+        <!--<dependency>-->
+        <!--    <groupId>org.springframework.boot</groupId>-->
+        <!--    <artifactId>spring-boot-starter-jetty</artifactId>-->
+        <!--</dependency>-->
+        <!-- 内置服务器使用 Undertow -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
