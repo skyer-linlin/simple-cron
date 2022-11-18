@@ -96,7 +96,7 @@ public class TopicService {
             Comment comment = new Comment();
             ObjPropsCopyUtil.copyProperties(commentVO, comment);
             comment.setContentUrlTitles(commentVO.getContentUrlTitles().stream().map(ContentUrlVO::getUrl).collect(Collectors.toList()));
-            comment.setMultimedia(commentVO.getMultimedia());
+            comment.setMultimedia(commentVO.getMultimedia().stream().map(MutiMediaVO::getUrl).collect(Collectors.toList()));
             commentList.add(comment);
         }
         MemberVO memberVO = topicVO.getMember();

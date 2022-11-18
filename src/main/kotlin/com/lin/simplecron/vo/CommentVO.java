@@ -32,7 +32,7 @@ public class CommentVO {
     @JsonProperty("content_url_titles")
     private List<ContentUrlVO> contentUrlTitles;
 
-    private List<String> multimedia;
+    private List<MutiMediaVO> multimedia;
 
     @JsonProperty("reply_comment_id")
     private String replyCommentId;
