@@ -1,3 +1,7 @@
 server:
   port: 8090
   host: 192.168.31.20
+
+spring:
+  redis:
+    database: 2

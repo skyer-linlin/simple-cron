@@ -15,7 +15,6 @@ import java.util.Arrays;
  */
 public interface Constants {
 
-
     @AllArgsConstructor
     @Getter
     enum Cex {
@@ -38,6 +37,22 @@ public interface Constants {
                 .findFirst().orElse(OTHER_ERR);
             return cex;
         }
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    enum RedisValueType {
+        STRING("string"), HASH("hash"),
+        SET("set"), ZSET("zset"), LIST("list"),
+        ;
+        private String name;
+    }
+
+    class CacheConsts {
+
+        public static final String KEY_PREFIX = "simplecron";
+        public static final String JIEMO_LOGIN_TOKEN = "jiemo.logintoken";
 
     }
 

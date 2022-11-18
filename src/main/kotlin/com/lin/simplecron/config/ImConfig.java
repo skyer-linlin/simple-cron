@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.UpdatesListener;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -20,7 +21,8 @@ import java.net.Proxy;
 public class ImConfig {
 
     @Bean("notifyBot")
-    public TelegramBot myNotifyBot() {
+    @Profile("prod")
+    public TelegramBot prodNotifyBot() {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("192.168.31.32", 7890));
         final OkHttpClient okHttpClient = new OkHttpClient.Builder().proxy(proxy).build();
         final TelegramBot telegramBot = new TelegramBot.Builder("1761282109:AAH-yp8zi4mOZwYCZP0VUXpc_8fy9Ea6nV8")
@@ -35,5 +37,11 @@ public class ImConfig {
             }
         );
         return telegramBot;
+    }
+
+    @Bean("notifyBot")
+    @Profile("dev")
+    public TelegramBot devNotifyBot() {
+        return new TelegramBot.Builder("test").build();
     }
 }

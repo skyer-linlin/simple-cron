@@ -2,14 +2,10 @@ package com.lin.simplecron.task;
 
 import com.google.common.collect.Lists;
 import com.lin.simplecron.service.CoinGlassService;
+import com.lin.simplecron.service.LoginTokenService;
 import com.lin.simplecron.service.TopicService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,10 +23,12 @@ public class ScratchJiemoTaskService {
     private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012, 34555);
     private final TopicService topicService;
     private final CoinGlassService coinGlassService;
+    private final LoginTokenService loginTokenService;
 
-    public ScratchJiemoTaskService(TopicService topicService, CoinGlassService coinGlassService) {
+    public ScratchJiemoTaskService(TopicService topicService, CoinGlassService coinGlassService, LoginTokenService loginTokenService) {
         this.topicService = topicService;
         this.coinGlassService = coinGlassService;
+        this.loginTokenService = loginTokenService;
     }
 
     /**
@@ -55,5 +53,11 @@ public class ScratchJiemoTaskService {
         log.info("开始抓取资金费率定时任务");
         coinGlassService.saveCurrentFundingRate();
         log.info("完成抓取资金费率定时任务");
+    }
+
+    public void scheduleCheckLoginTokenExpires() {
+        log.info("开始检查 loginToken 过期时间");
+        loginTokenService.checkLoginTokenExpired();
+        log.info("完成检查 loginToken 过期时间");
     }
 }

@@ -32,4 +32,13 @@ public class ScratchJiemoTaskRunner {
     public void scheduleScratchFundingRateTask() {
         scratchJiemoTaskService.scheduleScratchFundingRateTask();
     }
+
+    /**
+     * 每 4 个小时检查一次 token 过期时间
+     */
+    @Scheduled(cron = "0 8 0/4 * * ? ")
+    @Async("scheduledExecutor")
+    public void scheduleCheckLoginTokenExpires() {
+        scratchJiemoTaskService.scheduleCheckLoginTokenExpires();
+    }
 }
