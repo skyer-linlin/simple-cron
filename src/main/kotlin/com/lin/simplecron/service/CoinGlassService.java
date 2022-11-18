@@ -86,7 +86,6 @@ public class CoinGlassService {
                 case BITMEX -> umarginFundingRate.setBitmex(cexFundingRateVO.getRate());
                 case OKEX -> umarginFundingRate.setOkex(cexFundingRateVO.getRate());
                 case BYBIT -> umarginFundingRate.setBybit(cexFundingRateVO.getRate());
-                case FTX -> umarginFundingRate.setFtx(cexFundingRateVO.getRate());
                 case GATE -> umarginFundingRate.setGate(cexFundingRateVO.getRate());
                 case DERIBIT -> umarginFundingRate.setDeribit(cexFundingRateVO.getRate());
                 case BITGET -> umarginFundingRate.setBitget(cexFundingRateVO.getRate());
@@ -109,7 +108,6 @@ public class CoinGlassService {
                 case BITMEX -> cmarginFundingRate.setBitmex(cexFundingRateVO.getRate());
                 case OKEX -> cmarginFundingRate.setOkex(cexFundingRateVO.getRate());
                 case BYBIT -> cmarginFundingRate.setBybit(cexFundingRateVO.getRate());
-                case FTX -> cmarginFundingRate.setFtx(cexFundingRateVO.getRate());
                 case GATE -> cmarginFundingRate.setGate(cexFundingRateVO.getRate());
                 case DERIBIT -> cmarginFundingRate.setDeribit(cexFundingRateVO.getRate());
                 case BITGET -> cmarginFundingRate.setBitget(cexFundingRateVO.getRate());

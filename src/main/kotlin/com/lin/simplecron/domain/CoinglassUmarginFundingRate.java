@@ -60,12 +60,6 @@ public class CoinglassUmarginFundingRate implements Serializable {
     private Double bybit;
 
     /**
-     * ftx
-     */
-    @Column(name = "ftx")
-    private Double ftx;
-
-    /**
      * bitfinex
      */
     @Column(name = "gate")
