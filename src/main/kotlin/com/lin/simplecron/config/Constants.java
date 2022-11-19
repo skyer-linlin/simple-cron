@@ -22,7 +22,6 @@ public interface Constants {
         BITMEX("Bitmex"),
         OKEX("Okex"),
         BYBIT("Bybit"),
-        FTX("FTX"),
         GATE("Gate"),
         DERIBIT("Deribit"),
         BITGET("Bitget"),

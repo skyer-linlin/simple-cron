@@ -66,6 +66,12 @@ spring:
     host: 192.168.31.190
     port: 6379
     password: admin
+    lettuce:
+      pool:
+        max-active: 5   # 最大连接数
+        min-idle: 2   # 最小空闲连接
+        max-idle: 3   # 最大空闲连接
+    timeout: 10000ms     # 连接超时时间
 
 
 
