@@ -9,10 +9,27 @@
 </head>
 <body>
 <div class="div1">
-  <h1>芥末圈备份页</h1>
   <div>
-    <a th:href="'http://'+${uriPrefix}+'/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'" target="_blank">swagger地址</a>
-    <a th:href="'http://'+${uriPrefix}+':3000'" target="_blank">grafana地址</a>
+    <a th:href="@{/page/jiemo/topics}" title="芥末圈备份页">
+      <img style="background:none;vertical-align:middle" alt="芥末圈" height="50"
+           th:src="@{/images/JiemoIcon.png}">
+    </a>
+  </div>
+  <div>
+    <a th:href="'http://'+${uriPrefix}+'/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'"
+       target="_blank">
+      <input type="button" value="swagger地址" class="darkBtn" />
+    </a>
+    <a th:href="'http://'+${host}+':3000'" target="_blank">
+      <input type="button" value="grafana地址" class="darkBtn" />
+    </a>
+  </div>
+  <div>
+    <th:block th:each="group: ${groups}">
+      <a th:href="@{/page/jiemo/topics(groupId=${group.getGroupId()})}">
+        <input type="button" th:value="${group.getGroupName()}" class="darkBtn" />
+      </a>
+    </th:block>
   </div>
   <h2 th:text="'下面是抓取到的芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
   <table>

@@ -3,7 +3,6 @@ package com.lin.simplecron.service;
 import cn.hutool.core.collection.CollectionUtil;
 import com.lin.simplecron.config.Constants;
 import com.lin.simplecron.dto.JiemoGroupInfoDto;
-import com.lin.simplecron.repository.TopicRepository;
 import com.lin.simplecron.utils.RedisUtil;
 import com.lin.simplecron.vo.JiemoResponse;
 import com.lin.simplecron.vo.TopicVO;
@@ -68,7 +67,7 @@ public class GroupService {
     public Set<JiemoGroupInfoDto> removeGroup(Integer groupId) {
         Set<JiemoGroupInfoDto> collect = getAllGroups().stream()
             .filter(dto -> Objects.equals(dto.getGroupId(), groupId)).collect(Collectors.toSet());
-        collect.forEach(dto->{
+        collect.forEach(dto -> {
             redisTemplate.opsForSet().remove(JIEMO_GROUPS_SET_CACHE_KEY, dto);
         });
         return collect;

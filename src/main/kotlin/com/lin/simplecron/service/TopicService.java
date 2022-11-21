@@ -129,6 +129,11 @@ public class TopicService {
     public List<Topic> findAll() {
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> topicList = topicRepository.findAll(sort);
+        topicContent(topicList);
+        return topicList;
+    }
+
+    private void topicContent(List<Topic> topicList) {
         for (Topic topic : topicList) {
             // 有权限要求的圈子,content 字段只有前几十个字,剩余内容在ContentVisitor字段,无门槛圈子,主题内容都在 content 字段
             if (StrUtil.isBlank(topic.getContentVisitor())) {
@@ -138,9 +143,16 @@ public class TopicService {
                 topic.setContentVisitor(preStr + topic.getContentVisitor());
             }
         }
-        return topicList;
     }
 
+
+    public List<Topic> findTopicsByGroupId(Integer groupId) {
+        Topic topic = new Topic().setGroupId(groupId);
+        Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
+        List<Topic> groupTopics = topicRepository.findAll(Example.of(topic), sort);
+        topicContent(groupTopics);
+        return groupTopics;
+    }
 
     public Optional<Topic> findOne(Integer topicId) {
         return topicRepository.findById(topicId);
@@ -222,12 +234,6 @@ public class TopicService {
         httpHeaders.set("timestamp", "1663054705567");
         httpHeaders.set("Cookie", "PHPSESSID=401d58286840994ed4b36cbfcfb0e6d7");
         return httpHeaders;
-    }
-
-    public List<Topic> findTopicsByGroupId(Integer groupId) {
-        Topic topic = new Topic().setGroupId(groupId);
-        List<Topic> groupTopics = topicRepository.findAll(Example.of(topic));
-        return groupTopics;
     }
 
 
