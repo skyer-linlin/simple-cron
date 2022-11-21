@@ -1,14 +1,15 @@
 package com.lin.simplecron.task;
 
-import com.google.common.collect.Lists;
+import com.lin.simplecron.dto.JiemoGroupInfoDto;
 import com.lin.simplecron.service.CoinGlassService;
+import com.lin.simplecron.service.GroupService;
 import com.lin.simplecron.service.LoginTokenService;
 import com.lin.simplecron.service.TopicService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * com.lin.simplecron.task
@@ -20,15 +21,17 @@ import java.util.List;
 @Component
 @Slf4j
 public class ScratchJiemoTaskService {
-    private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012, 34555);
+    // private final List<Integer> groupIdList = Lists.newArrayList(37064, 41228, 42920, 37012, 34555);
     private final TopicService topicService;
     private final CoinGlassService coinGlassService;
     private final LoginTokenService loginTokenService;
+    private final GroupService groupService;
 
-    public ScratchJiemoTaskService(TopicService topicService, CoinGlassService coinGlassService, LoginTokenService loginTokenService) {
+    public ScratchJiemoTaskService(TopicService topicService, CoinGlassService coinGlassService, LoginTokenService loginTokenService, GroupService groupService) {
         this.topicService = topicService;
         this.coinGlassService = coinGlassService;
         this.loginTokenService = loginTokenService;
+        this.groupService = groupService;
     }
 
     /**
@@ -37,7 +40,9 @@ public class ScratchJiemoTaskService {
     @SneakyThrows
     public void scheduleScratchJiemoTopicTask() {
         log.info("开始抓取芥末圈定时任务");
-        for (Integer groupId : groupIdList) {
+        Set<JiemoGroupInfoDto> groups = groupService.getAllGroups();
+        for (JiemoGroupInfoDto groupInfoDto : groups) {
+            Integer groupId = groupInfoDto.getGroupId();
             log.info("抓取 {} 主题中", groupId);
             topicService.fetchTopicUpdate(groupId);
             log.info("抓取 {} 主题完成", groupId);

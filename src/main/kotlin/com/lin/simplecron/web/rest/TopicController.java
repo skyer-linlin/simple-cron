@@ -67,7 +67,7 @@ public class TopicController {
     }
 
     @Operation(summary = "按 groupId 删除最新一条主题")
-    @DeleteMapping("/topic/group/{groupId}")
+    @DeleteMapping("/topics/group/{groupId}")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Optional<Topic>> deleteGroupLatestTopic(@PathVariable @Parameter(example = "42920") Integer groupId) {
         return ResponseEntity.ok(topicService.deleteGroupLatestTopic(groupId));
@@ -80,6 +80,7 @@ public class TopicController {
         scratchJiemoTask.scheduleScratchJiemoTopicTask();
         return ResponseEntity.ok("更新完成");
     }
+
 
 
 }

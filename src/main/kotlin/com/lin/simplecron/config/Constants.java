@@ -52,7 +52,7 @@ public interface Constants {
 
         public static final String KEY_PREFIX = "simplecron";
         public static final String JIEMO_LOGIN_TOKEN = "jiemo.logintoken";
-
+        public static final String JIEMO_GROUPS_SET = "jiemo.groups";
     }
 
 }

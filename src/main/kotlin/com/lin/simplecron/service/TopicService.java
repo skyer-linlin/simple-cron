@@ -188,7 +188,7 @@ public class TopicService {
     }
 
     @Nullable
-    private JiemoResponse fetchTopicData(Integer groupId) {
+    JiemoResponse fetchTopicData(Integer groupId) {
         HttpHeaders httpHeaders = setRequestHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         String currentLoginToken = loginTokenService.getCurrentLoginToken();
