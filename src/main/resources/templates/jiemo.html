@@ -31,7 +31,7 @@
       </a>
     </th:block>
   </div>
-  <h2 th:text="'下面是抓取到的芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
+  <h2 th:text="'下面是抓取到的 '+${groupName}+' 芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
   <table>
 
     <tr th:each="topic: ${topics}">

@@ -42,8 +42,14 @@ public class JiemoController {
     public String jiemo(@Parameter Integer groupId, Model model) {
         if (Objects.isNull(groupId)) {
             model.addAttribute("topics", topicService.findAll());
+            model.addAttribute("groupName", "所有");
         } else {
             model.addAttribute("topics", topicService.findTopicsByGroupId(groupId));
+            groupService.getAllGroups().stream()
+                .filter(info -> Objects.equals(info.getGroupId(), groupId))
+                .findFirst()
+                .ifPresentOrElse(info -> model.addAttribute("groupName", info.getGroupName()),
+                    () -> model.addAttribute("groupName", "未知"));
         }
         model.addAttribute("groups", groupService.getAllGroups());
         model.addAttribute("uriPrefix", host + ":" + port);
