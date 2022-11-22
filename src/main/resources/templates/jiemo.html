@@ -49,7 +49,8 @@
       <div th:if="${topic.commentCount>0}">
         <hr class="hr-solid-content" data-content="评论区">
         <div th:each="comment:${topic.comments}" class="comment">
-          <div class="name" th:text="${comment.nickname}"></div>
+          <div class="name"
+               th:text="${comment.nickname}+${comment.replyCommentId.equals(0)?'':' 回复 '+comment.getReplyNickname()}"></div>
           <div th:text="' : '+${comment.content}"></div>
           <div th:if="${comment.getMultimedia().size() > 0}">
             <ul th:each="link:${comment.getMultimedia}">
