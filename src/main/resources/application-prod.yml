@@ -5,3 +5,5 @@ server:
 spring:
   redis:
     database: 2
+  thymeleaf:
+    cache: true
