@@ -9,11 +9,15 @@ import com.google.common.collect.Lists;
 import com.lin.simplecron.domain.Comment;
 import com.lin.simplecron.domain.Member;
 import com.lin.simplecron.domain.Topic;
+import com.lin.simplecron.dto.CommentDto;
+import com.lin.simplecron.dto.TopicDto;
 import com.lin.simplecron.repository.TopicRepository;
+import com.lin.simplecron.utils.CommentTreeUtil;
 import com.lin.simplecron.utils.ObjPropsCopyUtil;
 import com.lin.simplecron.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
@@ -126,11 +130,24 @@ public class TopicService {
     }
 
     @Transactional(readOnly = true)
-    public List<Topic> findAll() {
+    public List<TopicDto> findAll() {
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> topicList = topicRepository.findAll(sort);
         topicContent(topicList);
-        return topicList;
+        List<TopicDto> topicDtoList = Lists.newArrayList();
+        for (Topic topic : topicList) {
+            TopicDto topicDto = topic2TopicDto(topic);
+            topicDtoList.add(topicDto);
+        }
+        return topicDtoList;
+    }
+
+    private TopicDto topic2TopicDto(Topic topic) {
+        TopicDto topicDto = new TopicDto();
+        BeanUtils.copyProperties(topic, topicDto);
+        List<CommentDto> commentDtos = CommentTreeUtil.buildSortedCommentsList(topic.getComments());
+        topicDto.setCommentDtoList(commentDtos);
+        return topicDto;
     }
 
     private void topicContent(List<Topic> topicList) {
@@ -146,16 +163,22 @@ public class TopicService {
     }
 
 
-    public List<Topic> findTopicsByGroupId(Integer groupId) {
+    public List<TopicDto> findTopicsByGroupId(Integer groupId) {
         Topic topic = new Topic().setGroupId(groupId);
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> groupTopics = topicRepository.findAll(Example.of(topic), sort);
         topicContent(groupTopics);
-        return groupTopics;
+        List<TopicDto> topicDtoList = Lists.newArrayList();
+        for (Topic gt : groupTopics) {
+            TopicDto topicDto = topic2TopicDto(gt);
+            topicDtoList.add(topicDto);
+        }
+        return topicDtoList;
     }
 
-    public Optional<Topic> findOne(Integer topicId) {
-        return topicRepository.findById(topicId);
+    public Optional<TopicDto> findOne(Integer topicId) {
+        Optional<Topic> topic = topicRepository.findById(topicId);
+        return topic.map(this::topic2TopicDto);
     }
 
     @Transactional

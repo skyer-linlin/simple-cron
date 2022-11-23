@@ -1,6 +1,7 @@
 package com.lin.simplecron.web.rest;
 
 import com.lin.simplecron.domain.Topic;
+import com.lin.simplecron.dto.TopicDto;
 import com.lin.simplecron.service.TopicService;
 import com.lin.simplecron.task.ScratchJiemoTaskService;
 import io.micrometer.core.annotation.Timed;
@@ -41,14 +42,14 @@ public class TopicController {
     @Operation(summary = "获取所有主题")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics")
-    public ResponseEntity<List<Topic>> getAllTopics() {
+    public ResponseEntity<List<TopicDto>> getAllTopics() {
         return ResponseEntity.ok(topicService.findAll());
     }
 
     @GetMapping("/topics/{topicId}")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
-    public ResponseEntity<Optional<Topic>> getTopic(@PathVariable Integer topicId) {
-        Optional<Topic> topic = topicService.findOne(topicId);
+    public ResponseEntity<Optional<TopicDto>> getTopic(@PathVariable Integer topicId) {
+        Optional<TopicDto> topic = topicService.findOne(topicId);
         return ResponseEntity.ok(topic);
     }
 
@@ -62,7 +63,7 @@ public class TopicController {
     @Operation(summary = "按 groupId 查找主题")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics/groups/{groupId}")
-    public ResponseEntity<List<Topic>> findTopicsByGroupId(@PathVariable Integer groupId) {
+    public ResponseEntity<List<TopicDto>> findTopicsByGroupId(@PathVariable Integer groupId) {
         return ResponseEntity.ok(topicService.findTopicsByGroupId(groupId));
     }
 
