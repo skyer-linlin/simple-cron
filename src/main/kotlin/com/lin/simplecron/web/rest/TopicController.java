@@ -82,6 +82,9 @@ public class TopicController {
         return ResponseEntity.ok("更新完成");
     }
 
-
-
+    @Operation(summary = "按照给定 id 批量扫描芥末圈内容")
+    @PostMapping("/topics/scan/{startGroupId}/{endGroupId}")
+    public void batchScanGroupTopics(@PathVariable Integer startGroupId, @PathVariable Integer endGroupId) {
+        topicService.batchScanGroupTopics(startGroupId, endGroupId);
+    }
 }

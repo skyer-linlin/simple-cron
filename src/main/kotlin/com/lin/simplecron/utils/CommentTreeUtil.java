@@ -78,10 +78,6 @@ public class CommentTreeUtil {
     }
 
     private static CommentTreeNode buildCommentTree(List<Comment> commentList) {
-        // 1. 先将所有评论按照时间正序排列
-        // 2. 逐一取出评论
-        //      如果 topCommentId 为 0,则这是第一层节点,否则是下层节点
-        //      如果为下层节点,则根据 topCommentId 找到所在的子树, 将其添加进对应 set 中
         CommentTreeNode root = new CommentTreeNode();
         root.setDepth(0).setCommentId(0);
         for (Comment comment : commentList) {

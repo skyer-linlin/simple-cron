@@ -15,6 +15,7 @@ import com.lin.simplecron.repository.TopicRepository;
 import com.lin.simplecron.utils.CommentTreeUtil;
 import com.lin.simplecron.utils.ObjPropsCopyUtil;
 import com.lin.simplecron.vo.*;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
@@ -28,10 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +58,14 @@ public class TopicService {
     @Autowired
     private LoginTokenService loginTokenService;
 
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        System.out.println(list);
+    }
+
     public JiemoResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
 
@@ -71,7 +79,6 @@ public class TopicService {
         }
         return response;
     }
-
 
     /**
      * 将抓取到的响应转换为对象供使用
@@ -133,13 +140,39 @@ public class TopicService {
     public List<TopicDto> findAll() {
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> topicList = topicRepository.findAll(sort);
+        // filter, 过滤掉毫无意义的早安晚安内容
         topicContent(topicList);
+        filterMeanlessContent(topicList);
         List<TopicDto> topicDtoList = Lists.newArrayList();
         for (Topic topic : topicList) {
             TopicDto topicDto = topic2TopicDto(topic);
             topicDtoList.add(topicDto);
         }
         return topicDtoList;
+    }
+
+    /**
+     * 过滤掉毫无意义的内容
+     *
+     * @param topicList
+     */
+    private void filterMeanlessContent(List<Topic> topicList) {
+        String[] meanLessWords = new String[]{"早安", "晚安", "早", "早上好", "收到"};
+        Iterator<Topic> iterator = topicList.iterator();
+        while (iterator.hasNext()) {
+            Topic topic = iterator.next();
+            // 对于这个特别爱发无意义内容的圈子,过滤掉早安晚安主题的内容
+            if (Objects.equals(topic.getGroupId(), 37028)) {
+                String contentVisitor = topic.getContentVisitor();
+                if (contentVisitor.length() < 10 && StrUtil.containsAny(contentVisitor, meanLessWords)) {
+                    iterator.remove();
+                }
+                // 过滤掉评论中无意义的回复
+                List<Comment> commentList = topic.getComments();
+                commentList.removeIf(comment -> comment.getContent().length() < 10 && StrUtil.containsAny(comment.getContent(), meanLessWords));
+            }
+        }
+
     }
 
     private TopicDto topic2TopicDto(Topic topic) {
@@ -162,12 +195,12 @@ public class TopicService {
         }
     }
 
-
     public List<TopicDto> findTopicsByGroupId(Integer groupId) {
         Topic topic = new Topic().setGroupId(groupId);
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> groupTopics = topicRepository.findAll(Example.of(topic), sort);
         topicContent(groupTopics);
+        filterMeanlessContent(groupTopics);
         List<TopicDto> topicDtoList = Lists.newArrayList();
         for (Topic gt : groupTopics) {
             TopicDto topicDto = topic2TopicDto(gt);
@@ -259,7 +292,6 @@ public class TopicService {
         return httpHeaders;
     }
 
-
     public Optional<Topic> deleteGroupLatestTopic(Integer groupId) {
         Optional<Topic> groupLatestTopic = findGroupLatestTopic(groupId);
         groupLatestTopic.ifPresent(topic -> {
@@ -267,5 +299,41 @@ public class TopicService {
             log.warn("删除 {} 圈子 id为 {} 主题", groupId, topic.getId());
         });
         return groupLatestTopic;
+    }
+
+    @SneakyThrows
+    public void batchScanGroupTopics(Integer startGroupId, Integer endGroupId) {
+        List<Integer> valueList = new ArrayList<>();
+        log.info("开始批量抓有价值的芥末圈,入参 startGroupId:{}, endGroupId:{}", startGroupId, endGroupId);
+
+        for (int currentGroupId = startGroupId + 1; currentGroupId < endGroupId; currentGroupId++) {
+            log.info("------------------------------");
+            Thread.sleep(10_000);
+
+            log.info("当前圈子 id:{}", currentGroupId);
+            JiemoResponse customResponse = fetchTopicData(currentGroupId);
+            List<TopicVO> topicVOList = customResponse.getData().getTopics();
+            if (topicVOList.isEmpty()) continue;
+            String groupName = topicVOList.get(0).getGroup().getTitle();
+            List<Topic> topicList = topicVOList.stream().map(this::topicVO2Topic).collect(Collectors.toList());
+            if (topicList.size() < 10) continue;
+            log.info("当前圈子 id:{}, 名称:{}", currentGroupId, groupName);
+            LocalDateTime lastUpdateTime = topicList.get(0).getCreateTime();
+            log.info("最后更新时间:{}", lastUpdateTime);
+            if (lastUpdateTime.isAfter(LocalDate.of(2022, 1, 1).atStartOfDay())) {
+                valueList.add(currentGroupId);
+            }
+            Topic lastTopic = topicList.get(0);
+            if (StrUtil.isBlank(lastTopic.getContentVisitor())) {
+                lastTopic.setContentVisitor(lastTopic.getContent());
+            } else {
+                String preStr = StrUtil.subPre(lastTopic.getContent(), 6);
+                lastTopic.setContentVisitor(preStr + lastTopic.getContentVisitor());
+            }
+            log.info("最后更新内容:{}", lastTopic.getContentVisitor());
+
+        }
+
+        log.info("有价值的芥末圈:{}", valueList);
     }
 }

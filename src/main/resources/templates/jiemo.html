@@ -50,7 +50,8 @@
         <hr class="hr-solid-content" data-content="评论区">
         <div th:each="commentDto:${topic.commentDtoList}" class="comment">
           <div class="name"
-               th:text="${commentDto.prefix} + ${commentDto.nickname}+${commentDto.replyCommentId.equals(0)?'':' 回复 '+commentDto.getReplyNickname()}"></div>
+               th:text="${commentDto.prefix} + ${commentDto.nickname}
+               +${commentDto.replyCommentId.equals(0)?'':' 回复 '+commentDto.getReplyNickname()}"></div>
           <div th:text="' : '+${commentDto.content}"></div>
           <div th:if="${commentDto.getMultimedia().size() > 0}">
             <ul th:each="link:${commentDto.getMultimedia}">

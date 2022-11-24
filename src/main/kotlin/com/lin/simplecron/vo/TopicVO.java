@@ -95,9 +95,6 @@ public class TopicVO {
   @JsonProperty("is_collect")
   private int isCollect;
 
-  @JsonProperty("member_level")
-  private List<String> memberLevel;
-
   @JsonProperty("content_visitor")
   private String contentVisitor;
 }
