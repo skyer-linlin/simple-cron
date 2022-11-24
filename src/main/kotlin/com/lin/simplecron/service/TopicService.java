@@ -58,14 +58,6 @@ public class TopicService {
     @Autowired
     private LoginTokenService loginTokenService;
 
-    public static void main(String[] args) {
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        System.out.println(list);
-    }
-
     public JiemoResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
 
