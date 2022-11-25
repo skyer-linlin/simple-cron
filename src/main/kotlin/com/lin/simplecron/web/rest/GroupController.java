@@ -46,7 +46,7 @@ public class GroupController {
     }
 
     @Operation(summary = "隐藏不想继续抓取的 group,与移除 api 不同的是并不删除已经抓取的内容")
-    @DeleteMapping("/hide/{groupId}")
+    @PostMapping("/hide/{groupId}")
     public ResponseEntity<Optional<JiemoGroupInfoDto>> hideGroup(@PathVariable @Parameter Integer groupId) {
         return ResponseEntity.ok(groupService.hideGroup(groupId));
     }

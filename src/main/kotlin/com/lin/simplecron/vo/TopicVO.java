@@ -85,7 +85,6 @@ public class TopicVO {
   @JsonProperty("has_liked")
   private int hasLiked;
 
-  private List<String> admires;
   private List<CommentVO> comments;
   private List<LikesVO> likes;
 
