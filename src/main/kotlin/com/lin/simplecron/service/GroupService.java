@@ -64,12 +64,24 @@ public class GroupService {
         return Optional.empty();
     }
 
-    public Set<JiemoGroupInfoDto> removeGroup(Integer groupId) {
-        Set<JiemoGroupInfoDto> collect = getAllGroups().stream()
-            .filter(dto -> Objects.equals(dto.getGroupId(), groupId)).collect(Collectors.toSet());
-        collect.forEach(dto -> {
-            redisTemplate.opsForSet().remove(JIEMO_GROUPS_SET_CACHE_KEY, dto);
+    public Optional<JiemoGroupInfoDto> removeGroup(Integer groupId) {
+        Optional<JiemoGroupInfoDto> groupInfoDto = getAllGroups().stream()
+            .filter(dto -> Objects.equals(dto.getGroupId(), groupId)).findAny();
+        groupInfoDto.ifPresent(info -> {
+            redisTemplate.opsForSet().remove(JIEMO_GROUPS_SET_CACHE_KEY, info);
+            log.warn("即将删除圈子: {}, groupId: {}", info.getGroupName(), groupId);
+            topicService.deleteGroupTopics(groupId);
         });
-        return collect;
+        return groupInfoDto;
+    }
+
+    public Optional<JiemoGroupInfoDto> hideGroup(Integer groupId) {
+        Optional<JiemoGroupInfoDto> groupInfoDto = getAllGroups().stream()
+            .filter(dto -> Objects.equals(dto.getGroupId(), groupId)).findAny();
+        groupInfoDto.ifPresent(info -> {
+            redisTemplate.opsForSet().remove(JIEMO_GROUPS_SET_CACHE_KEY, info);
+            log.warn("即将删除圈子: {}, groupId: {}", info.getGroupName(), groupId);
+        });
+        return groupInfoDto;
     }
 }

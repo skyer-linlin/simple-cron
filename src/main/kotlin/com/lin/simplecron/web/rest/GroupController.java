@@ -41,7 +41,13 @@ public class GroupController {
 
     @Operation(summary = "移除不想继续抓取的 group")
     @DeleteMapping("/remove/{groupId}")
-    public ResponseEntity<Set<JiemoGroupInfoDto>> removeGroup(@PathVariable @Parameter Integer groupId) {
+    public ResponseEntity<Optional<JiemoGroupInfoDto>> removeGroup(@PathVariable @Parameter Integer groupId) {
         return ResponseEntity.ok(groupService.removeGroup(groupId));
+    }
+
+    @Operation(summary = "隐藏不想继续抓取的 group,与移除 api 不同的是并不删除已经抓取的内容")
+    @DeleteMapping("/remove/{groupId}")
+    public ResponseEntity<Optional<JiemoGroupInfoDto>> hideGroup(@PathVariable @Parameter Integer groupId) {
+        return ResponseEntity.ok(groupService.hideGroup(groupId));
     }
 }

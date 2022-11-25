@@ -328,4 +328,11 @@ public class TopicService {
 
         log.info("有价值的芥末圈:{}", valueList);
     }
+
+    public void deleteGroupTopics(Integer groupId) {
+        Topic topic = new Topic().setGroupId(groupId);
+        List<Topic> groupTopics = topicRepository.findAll(Example.of(topic));
+        topicRepository.deleteAll(groupTopics);
+        log.info("已删除 {} 圈子主题 {} 条", groupId, groupTopics.size());
+    }
 }
