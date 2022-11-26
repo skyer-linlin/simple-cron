@@ -63,10 +63,11 @@ public class GroupService {
                 .setCreateTime(LocalDateTime.now())
                 .setCronStartTime(LocalDateTime.now());
             redisTemplate.opsForSet().add(JIEMO_GROUPS_SET_CACHE_KEY, dto);
+            // 添加圈子后立刻抓取一次
+            Thread.sleep(10_000);
+            topicService.fetchTopicUpdate(groupId);
             return Optional.ofNullable(dto);
         }
-        Thread.sleep(10_000);
-        topicService.fetchTopicUpdate(groupId);
         return Optional.empty();
     }
 
