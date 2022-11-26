@@ -134,8 +134,8 @@ public class TopicService {
     public List<TopicDto> findAll() {
         Sort sort = Sort.sort(Topic.class).by(Topic::getCreateTime).descending();
         List<Topic> topicList = topicRepository.findAll(sort);
-        // filter, 过滤掉毫无意义的早安晚安内容
         topicContent(topicList);
+        // filter, 过滤掉毫无意义的早安晚安内容
         filterMeanlessContent(topicList);
         List<TopicDto> topicDtoList = Lists.newArrayList();
         for (Topic topic : topicList) {
@@ -186,6 +186,7 @@ public class TopicService {
                 String preStr = StrUtil.subPre(topic.getContent(), 6);
                 topic.setContentVisitor(preStr + topic.getContentVisitor());
             }
+            topic.setContentVisitor(StrUtil.trim(topic.getContentVisitor()));
         }
     }
 

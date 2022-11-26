@@ -6,6 +6,7 @@ import com.lin.simplecron.dto.JiemoGroupInfoDto;
 import com.lin.simplecron.utils.RedisUtil;
 import com.lin.simplecron.vo.JiemoResponse;
 import com.lin.simplecron.vo.TopicVO;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,6 +41,7 @@ public class GroupService {
         return (Set) redisTemplate.opsForSet().members(JIEMO_GROUPS_SET_CACHE_KEY);
     }
 
+    @SneakyThrows
     public Optional<JiemoGroupInfoDto> addGroup(Integer groupId) {
         // 实际上因为加了cronStartTime字段,导致使用 set 类型没有什么意义,不同的时间添加同一个 groupId 产生的对象是不同的,所以此处手动去重
         List<JiemoGroupInfoDto> collect = getAllGroups().stream()
@@ -61,6 +63,8 @@ public class GroupService {
             redisTemplate.opsForSet().add(JIEMO_GROUPS_SET_CACHE_KEY, dto);
             return Optional.ofNullable(dto);
         }
+        Thread.sleep(10_000);
+        topicService.fetchTopicUpdate(groupId);
         return Optional.empty();
     }
 
