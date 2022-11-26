@@ -19,4 +19,5 @@ import java.util.List;
 @Accessors(chain = true)
 public class TopicDto extends Topic {
     private List<CommentDto> commentDtoList;
+    private String groupName;
 }

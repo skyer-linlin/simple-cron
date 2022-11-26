@@ -1,5 +1,6 @@
 package com.lin.simplecron.web.rest;
 
+import cn.hutool.core.util.StrUtil;
 import com.lin.simplecron.service.GroupService;
 import com.lin.simplecron.service.TopicService;
 import io.micrometer.core.annotation.Timed;
@@ -48,7 +49,7 @@ public class JiemoController {
             groupService.getAllGroups().stream()
                 .filter(info -> Objects.equals(info.getGroupId(), groupId))
                 .findFirst()
-                .ifPresentOrElse(info -> model.addAttribute("groupName", info.getGroupName()),
+                .ifPresentOrElse(info -> model.addAttribute("groupName", StrUtil.format("{} ({})", info.getGroupName(), info.getGroupId())),
                     () -> model.addAttribute("groupName", "未知"));
         }
         model.addAttribute("groups", groupService.getAllGroups());

@@ -10,6 +10,7 @@ import com.lin.simplecron.domain.Comment;
 import com.lin.simplecron.domain.Member;
 import com.lin.simplecron.domain.Topic;
 import com.lin.simplecron.dto.CommentDto;
+import com.lin.simplecron.dto.JiemoGroupInfoDto;
 import com.lin.simplecron.dto.TopicDto;
 import com.lin.simplecron.repository.TopicRepository;
 import com.lin.simplecron.utils.CommentTreeUtil;
@@ -19,7 +20,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -48,17 +48,26 @@ import java.util.stream.Collectors;
 public class TopicService {
     private static String JIEMO_TOPIC_URL =
         "https://api320.jiemo100.com/topic/index/index?login_token={loginToken}&group_id={groupId}&page=1&page_size=10";
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private TopicRepository topicRepository;
-    @Qualifier("NoProxyRestTemplate")
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private ImService imService;
-    @Autowired
-    private LoginTokenService loginTokenService;
+    private final ObjectMapper objectMapper;
+    private final TopicRepository topicRepository;
+    private final RestTemplate restTemplate;
+    private final ImService imService;
+    private final LoginTokenService loginTokenService;
+    private final GroupService groupService;
+
+    public TopicService(ObjectMapper objectMapper,
+                        TopicRepository topicRepository,
+                        @Qualifier("NoProxyRestTemplate") RestTemplate restTemplate,
+                        ImService imService,
+                        LoginTokenService loginTokenService,
+                        GroupService groupService) {
+        this.objectMapper = objectMapper;
+        this.topicRepository = topicRepository;
+        this.restTemplate = restTemplate;
+        this.imService = imService;
+        this.loginTokenService = loginTokenService;
+        this.groupService = groupService;
+    }
 
     public JiemoResponse applyCustomResponse() {
         log.info("读取本地 json 文件");
@@ -137,9 +146,10 @@ public class TopicService {
         topicContent(topicList);
         // filter, 过滤掉毫无意义的早安晚安内容
         filterMeanlessContent(topicList);
+        Map<Integer, JiemoGroupInfoDto> groupMap = groupService.getGroupMap();
         List<TopicDto> topicDtoList = Lists.newArrayList();
         for (Topic topic : topicList) {
-            TopicDto topicDto = topic2TopicDto(topic);
+            TopicDto topicDto = topic2TopicDto(topic, groupMap);
             topicDtoList.add(topicDto);
         }
         return topicDtoList;
@@ -169,11 +179,12 @@ public class TopicService {
 
     }
 
-    private TopicDto topic2TopicDto(Topic topic) {
+    private TopicDto topic2TopicDto(Topic topic, Map<Integer, JiemoGroupInfoDto> groupMap) {
         TopicDto topicDto = new TopicDto();
         BeanUtils.copyProperties(topic, topicDto);
         List<CommentDto> commentDtos = CommentTreeUtil.buildSortedCommentsList(topic.getComments());
         topicDto.setCommentDtoList(commentDtos);
+        topicDto.setGroupName(groupMap.getOrDefault(topic.getGroupId(), new JiemoGroupInfoDto().setGroupName("未知")).getGroupName());
         return topicDto;
     }
 
@@ -197,8 +208,9 @@ public class TopicService {
         topicContent(groupTopics);
         filterMeanlessContent(groupTopics);
         List<TopicDto> topicDtoList = Lists.newArrayList();
+        Map<Integer, JiemoGroupInfoDto> groupMap = groupService.getGroupMap();
         for (Topic gt : groupTopics) {
-            TopicDto topicDto = topic2TopicDto(gt);
+            TopicDto topicDto = topic2TopicDto(gt, groupMap);
             topicDtoList.add(topicDto);
         }
         return topicDtoList;
@@ -206,7 +218,8 @@ public class TopicService {
 
     public Optional<TopicDto> findOne(Integer topicId) {
         Optional<Topic> topic = topicRepository.findById(topicId);
-        return topic.map(this::topic2TopicDto);
+        Map<Integer, JiemoGroupInfoDto> groupMap = groupService.getGroupMap();
+        return topic.map(topic1 -> topic2TopicDto(topic1, groupMap));
     }
 
     @Transactional

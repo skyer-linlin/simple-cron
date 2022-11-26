@@ -1,6 +1,7 @@
 package com.lin.simplecron.service;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.google.common.collect.Maps;
 import com.lin.simplecron.config.Constants;
 import com.lin.simplecron.dto.JiemoGroupInfoDto;
 import com.lin.simplecron.utils.RedisUtil;
@@ -8,15 +9,12 @@ import com.lin.simplecron.vo.JiemoResponse;
 import com.lin.simplecron.vo.TopicVO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,11 +29,15 @@ import java.util.stream.Collectors;
 public class GroupService {
     public static final String JIEMO_GROUPS_SET_CACHE_KEY =
         RedisUtil.getStandardKeyName(Constants.CacheConsts.JIEMO_GROUPS_SET, Constants.RedisValueType.SET);
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
-    private TopicService topicService;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    private final TopicService topicService;
+
+    public GroupService(RedisTemplate<String, Object> redisTemplate, @Lazy TopicService topicService) {
+        this.redisTemplate = redisTemplate;
+        this.topicService = topicService;
+    }
 
     public Set<JiemoGroupInfoDto> getAllGroups() {
         return (Set) redisTemplate.opsForSet().members(JIEMO_GROUPS_SET_CACHE_KEY);
@@ -87,5 +89,14 @@ public class GroupService {
             log.warn("即将删除圈子: {}, groupId: {}", info.getGroupName(), groupId);
         });
         return groupInfoDto;
+    }
+
+    public Map<Integer, JiemoGroupInfoDto> getGroupMap() {
+        Set<JiemoGroupInfoDto> allGroups = getAllGroups();
+        Map<Integer, JiemoGroupInfoDto> hashMap = Maps.newHashMap();
+        for (JiemoGroupInfoDto infoDto : allGroups) {
+            hashMap.put(infoDto.getGroupId(), infoDto);
+        }
+        return hashMap;
     }
 }
