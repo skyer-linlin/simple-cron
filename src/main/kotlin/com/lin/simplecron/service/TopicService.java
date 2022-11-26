@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -252,13 +254,28 @@ public class TopicService {
         HttpHeaders httpHeaders = setRequestHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         String currentLoginToken = loginTokenService.getCurrentLoginToken();
-        ResponseEntity<JiemoResponse> responseEntity = restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, JiemoResponse.class, currentLoginToken, groupId);
+        ResponseEntity<JiemoResponse> responseEntity = executeHttpFetchRequest(groupId, requestEntity, currentLoginToken);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity.getBody();
         } else {
             log.error("抓取 topic 错误, 错误码:{}", responseEntity.getStatusCode());
             return null;
         }
+    }
+
+    /**
+     * 这里有时会发生 SocketTimeoutException, 通过接口来重试
+     *
+     * @param groupId
+     * @param requestEntity
+     * @param currentLoginToken
+     * @return
+     */
+    @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 5000, multiplier = 1, maxDelay = 10000))
+    private ResponseEntity<JiemoResponse> executeHttpFetchRequest(Integer groupId, HttpEntity<String> requestEntity, String currentLoginToken) {
+        ResponseEntity<JiemoResponse> responseEntity =
+            restTemplate.exchange(JIEMO_TOPIC_URL, HttpMethod.GET, requestEntity, JiemoResponse.class, currentLoginToken, groupId);
+        return responseEntity;
     }
 
     private HttpHeaders setRequestHeaders() {
@@ -295,6 +312,8 @@ public class TopicService {
 
     @SneakyThrows
     public void batchScanGroupTopics(Integer startGroupId, Integer endGroupId) {
+        // 抓取完成发送 im,就不用盯着日志了
+        // 抓取偶尔出现超时,超时以后自动重试
         List<Integer> valueList = new ArrayList<>();
         log.info("开始批量抓有价值的芥末圈,入参 startGroupId:{}, endGroupId:{}", startGroupId, endGroupId);
 
@@ -314,6 +333,7 @@ public class TopicService {
             log.info("最后更新时间:{}", lastUpdateTime);
             if (lastUpdateTime.isAfter(LocalDate.of(2022, 1, 1).atStartOfDay())) {
                 valueList.add(currentGroupId);
+                imService.sendImMsg(StrUtil.format("{} - {} 抓取任务,发现新的有价值的芥末圈: {}", startGroupId, endGroupId, currentGroupId));
             }
             Topic lastTopic = topicList.get(0);
             if (StrUtil.isBlank(lastTopic.getContentVisitor())) {

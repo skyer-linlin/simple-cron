@@ -53,7 +53,7 @@ public class TopicController {
         return ResponseEntity.ok(topic);
     }
 
-    @Operation(summary = "获取主题更新")
+    @Operation(summary = "抓取最新圈子内容")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     @GetMapping("/topics/update/{groupId}")
     public ResponseEntity<List<Topic>> fetchTopicUpdate(@PathVariable @Parameter(example = "37064") Integer groupId) {
