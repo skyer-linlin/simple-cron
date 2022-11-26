@@ -38,8 +38,9 @@
       <hr class="hr-twill-colorful">
       <div th:text="${topic.member.nickname}" class="name"></div>
       <div
-          th:text="${ '圈子:' + topic.groupName + '(' + topic.groupId + ')    |    发布于' + topic.createTime}"
-          class="createTime"></div>
+          class="createTime"
+          th:text="${ '圈子:' + topic.groupName + '(' + topic.groupId + ') | 发布于' +  #temporals.format(topic.createTime, 'yyyy-MM-dd HH:mm:ss') +' | '+topic.id }"></div>
+      <!--      <div th:text="发布于 + ${topic.createTime}" class="createTime"></div>-->
       <pre th:text="${topic.contentVisitor}"></pre>
       <div th:if="${topic.multimedia.size() > 0}">
         <ul th:each="link:${topic.multimedia}">
@@ -63,7 +64,8 @@
             </ul>
           </div>
           <div class="clear"></div>
-          <div class="createTime" th:text="${commentDto.createTime}"></div>
+          <div class="createTime"
+               th:text="${#temporals.format(commentDto.createTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
         </div>
       </div>
     </tr>
