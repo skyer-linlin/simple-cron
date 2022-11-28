@@ -4,12 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.lin.simplecron.service.GroupService;
 import com.lin.simplecron.service.TopicService;
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Objects;
 
@@ -40,10 +40,17 @@ public class JiemoController {
 
     @RequestMapping("topics")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
-    public String jiemo(@Parameter Integer groupId, Model model) {
+    public String jiemo(@RequestParam(name = "groupId", required = false) Integer groupId,
+                        @RequestParam(name = "least", required = false, defaultValue = "false") Boolean least,
+                        Model model) {
         if (Objects.isNull(groupId)) {
-            model.addAttribute("topics", topicService.findAll());
-            model.addAttribute("groupName", "所有");
+            if (least) {
+                model.addAttribute("topics", topicService.findLeastRecently());
+                model.addAttribute("groupName", "最近更新");
+            } else {
+                model.addAttribute("topics", topicService.findAll());
+                model.addAttribute("groupName", "所有");
+            }
         } else {
             model.addAttribute("topics", topicService.findTopicsByGroupId(groupId));
             groupService.getAllGroups().stream()

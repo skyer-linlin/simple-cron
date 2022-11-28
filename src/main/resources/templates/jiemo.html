@@ -14,8 +14,15 @@
       <img style="background:none;vertical-align:middle" alt="芥末圈" height="50"
            th:src="@{/images/JiemoIcon.png}">
     </a>
+    <hr class="hr-twill-colorful">
   </div>
   <div>
+    <a th:href="@{/page/jiemo/topics(least=true)}" title="过去十天内容">
+      <input type="button" value="过去十天" class="darkBtn" />
+    </a>
+  </div>
+  <div>
+    <hr class="hr-twill-colorful">
     <a th:href="'http://'+${uriPrefix}+'/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'"
        target="_blank">
       <input type="button" value="swagger地址" class="darkBtn" />
@@ -25,6 +32,7 @@
     </a>
   </div>
   <div>
+    <hr class="hr-twill-colorful">
     <th:block th:each="group: ${groups}">
       <a th:href="@{/page/jiemo/topics(groupId=${group.getGroupId()})}">
         <input type="button" th:value="${group.getGroupName()}" class="darkBtn" />
@@ -33,7 +41,6 @@
   </div>
   <h2 th:text="'下面是抓取到的 '+${groupName}+' 芥末圈主题, 共 '+${topics.size()}+' 条主题'"></h2>
   <table>
-
     <tr th:each="topic: ${topics}">
       <hr class="hr-twill-colorful">
       <div th:text="${topic.member.nickname}" class="name"></div>

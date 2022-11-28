@@ -46,6 +46,13 @@ public class TopicController {
         return ResponseEntity.ok(topicService.findAll());
     }
 
+    @Operation(summary = "获取最近更新的 topics,默认 10 天")
+    @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
+    @GetMapping("/topics/least")
+    public ResponseEntity<List<TopicDto>> getLeastRecentlyTopics() {
+        return ResponseEntity.ok(topicService.findLeastRecently());
+    }
+
     @GetMapping("/topics/{topicId}")
     @Timed(value = "main_page_request_duration", description = "Time taken to return main page", histogram = true)
     public ResponseEntity<Optional<TopicDto>> getTopic(@PathVariable Integer topicId) {

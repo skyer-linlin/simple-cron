@@ -155,6 +155,21 @@ public class TopicService {
         return topicDtoList;
     }
 
+    public List<TopicDto> findLeastRecently() {
+        LocalDate startDate = LocalDate.now().minusDays(10);
+        List<Topic> topicList = topicRepository.findTopicsByCreateTimeAfter(startDate);
+        topicContent(topicList);
+        // filter, 过滤掉毫无意义的早安晚安内容
+        filterMeanlessContent(topicList);
+        Map<Integer, JiemoGroupInfoDto> groupMap = groupService.getGroupMap();
+        List<TopicDto> topicDtoList = Lists.newArrayList();
+        for (Topic topic : topicList) {
+            TopicDto topicDto = topic2TopicDto(topic, groupMap);
+            topicDtoList.add(topicDto);
+        }
+        return topicDtoList;
+    }
+
     /**
      * 过滤掉毫无意义的内容
      *
@@ -369,4 +384,6 @@ public class TopicService {
         topicRepository.deleteAll(groupTopics);
         log.info("已删除 {} 圈子主题 {} 条", groupId, groupTopics.size());
     }
+
+
 }
