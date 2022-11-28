@@ -4,7 +4,6 @@ import com.lin.simplecron.domain.Topic;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,5 +15,5 @@ import java.util.List;
  */
 public interface TopicRepository extends MongoRepository<Topic, Integer> {
 
-    List<Topic> findTopicsByCreateTimeAfter(LocalDate startDate);
+    List<Topic> findTopicsByCreateTimeAfterOrderByCreateTimeDesc(LocalDate startDate);
 }

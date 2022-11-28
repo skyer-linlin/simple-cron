@@ -157,7 +157,7 @@ public class TopicService {
 
     public List<TopicDto> findLeastRecently() {
         LocalDate startDate = LocalDate.now().minusDays(10);
-        List<Topic> topicList = topicRepository.findTopicsByCreateTimeAfter(startDate);
+        List<Topic> topicList = topicRepository.findTopicsByCreateTimeAfterOrderByCreateTimeDesc(startDate);
         topicContent(topicList);
         // filter, 过滤掉毫无意义的早安晚安内容
         filterMeanlessContent(topicList);
