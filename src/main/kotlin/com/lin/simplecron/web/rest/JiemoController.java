@@ -1,6 +1,7 @@
 package com.lin.simplecron.web.rest;
 
 import cn.hutool.core.util.StrUtil;
+import com.lin.simplecron.dto.JiemoGroupInfoDto;
 import com.lin.simplecron.service.GroupService;
 import com.lin.simplecron.service.TopicService;
 import io.micrometer.core.annotation.Timed;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * com.lin.simplecron.controller
@@ -43,6 +45,7 @@ public class JiemoController {
     public String jiemo(@RequestParam(name = "groupId", required = false) Integer groupId,
                         @RequestParam(name = "least", required = false, defaultValue = "false") Boolean least,
                         Model model) {
+        Set<JiemoGroupInfoDto> allGroups = groupService.getAllGroups();
         if (Objects.isNull(groupId)) {
             if (least) {
                 model.addAttribute("topics", topicService.findLeastRecently());
@@ -53,13 +56,13 @@ public class JiemoController {
             }
         } else {
             model.addAttribute("topics", topicService.findTopicsByGroupId(groupId));
-            groupService.getAllGroups().stream()
+            allGroups.stream()
                 .filter(info -> Objects.equals(info.getGroupId(), groupId))
                 .findFirst()
                 .ifPresentOrElse(info -> model.addAttribute("groupName", StrUtil.format("{} ({})", info.getGroupName(), info.getGroupId())),
                     () -> model.addAttribute("groupName", "未知"));
         }
-        model.addAttribute("groups", groupService.getAllGroups());
+        model.addAttribute("groups", allGroups);
         model.addAttribute("uriPrefix", host + ":" + port);
         model.addAttribute("host", host);
         return "jiemo";
