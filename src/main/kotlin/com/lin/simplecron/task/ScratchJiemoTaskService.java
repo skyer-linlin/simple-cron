@@ -44,9 +44,14 @@ public class ScratchJiemoTaskService {
         for (JiemoGroupInfoDto groupInfoDto : groups) {
             Integer groupId = groupInfoDto.getGroupId();
             log.info("抓取 {} 主题中", groupId);
-            topicService.fetchTopicUpdate(groupId);
-            log.info("抓取 {} 主题完成", groupId);
-            Thread.sleep(7_000);
+            try {
+                topicService.fetchTopicUpdate(groupId);
+            } catch (Exception e) {
+                log.error("exception catch: 抓取 {} 圈子 {}, 异常详情:", groupInfoDto.getGroupName(), groupId, e);
+            } finally {
+                log.info("抓取 {} 主题完成", groupId);
+                Thread.sleep(7_000);
+            }
         }
     }
 

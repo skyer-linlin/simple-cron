@@ -1,6 +1,7 @@
 package com.lin.simplecron.repository;
 
 import com.lin.simplecron.domain.Topic;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
