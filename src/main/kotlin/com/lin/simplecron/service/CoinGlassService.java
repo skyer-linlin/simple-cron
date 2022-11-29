@@ -2,6 +2,7 @@ package com.lin.simplecron.service;
 
 import cn.hutool.core.lang.Pair;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.lin.simplecron.config.Constants;
 import com.lin.simplecron.domain.CoinglassCmarginFundingRate;
 import com.lin.simplecron.domain.CoinglassUmarginFundingRate;
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -144,5 +146,18 @@ public class CoinGlassService {
 
     public Pair<Long, Long> countFundingRate() {
         return Pair.of(umarginFundingRateRepository.count(), cmarginFundingRateRepository.count());
+    }
+
+
+    public Pair<Integer, Integer> deleteHistoryFundingRate() {
+        LocalDateTime ustartDate = LocalDate.now().minusDays(21).atStartOfDay();
+        // LocalDateTime dateTime = LocalDateTime.of(2022, 11, 6, 1, 25);
+        HashSet<String> ignoreSymbolSets = Sets.newHashSet("BTC", "ETH", "BNB");
+        Integer ures = umarginFundingRateRepository.deleteAllBySymbolNotInAndDatetimeBefore(ignoreSymbolSets, ustartDate);
+        log.info("清理u 本位资金费率数据 {} 条, 清理截止时间: {}", ures, ustartDate);
+        LocalDateTime cstartDate = LocalDate.now().minusDays(60).atStartOfDay();
+        Integer cres = cmarginFundingRateRepository.deleteAllBySymbolNotInAndDatetimeBefore(ignoreSymbolSets, cstartDate);
+        log.info("清理币本位资金费率数据 {} 条, 清理截止时间: {}", cres, ustartDate);
+        return Pair.of(ures, cres);
     }
 }

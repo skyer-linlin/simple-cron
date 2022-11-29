@@ -27,6 +27,9 @@ public class ScratchJiemoTaskRunner {
         scratchJiemoTaskService.scheduleScratchJiemoTopicTask();
     }
 
+    /**
+     * 定时抓取费率
+     */
     @Scheduled(cron = "0 * * * * ? ")
     @Async("scheduledExecutor")
     public void scheduleScratchFundingRateTask() {
@@ -40,5 +43,15 @@ public class ScratchJiemoTaskRunner {
     @Async("scheduledExecutor")
     public void scheduleCheckLoginTokenExpires() {
         scratchJiemoTaskService.scheduleCheckLoginTokenExpires();
+    }
+
+
+    /**
+     * 定时删除历史费率数据
+     */
+    @Scheduled(cron = "0 0 2 * * ? ")
+    @Async("scheduledExecutor")
+    public void scheduleClearHistoryFundingRateTask() {
+        scratchJiemoTaskService.scheduleClearHistoryFundingRateTask();
     }
 }
