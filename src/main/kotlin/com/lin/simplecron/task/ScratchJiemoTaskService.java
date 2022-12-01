@@ -67,9 +67,9 @@ public class ScratchJiemoTaskService {
 
     @SneakyThrows
     public void scheduleClearHistoryFundingRateTask() {
-        log.info("开始抓取资金费率定时任务");
+        log.info("开始清理过期资金费率数据");
         coinGlassService.deleteHistoryFundingRate();
-        log.info("完成抓取资金费率定时任务");
+        log.info("完成清理过期资金费率数据");
     }
 
     public void scheduleCheckLoginTokenExpires() {
