@@ -48,6 +48,12 @@ public class LoginTokenService {
     public void checkLoginTokenExpired() {
         Long expire = redisTemplate.getExpire(LOGIN_TOKEN_CACHE_KEY, TimeUnit.HOURS);
         if (Objects.isNull(expire) || expire < LOGIN_TOKEN_ALERT_HOUR) {
+            // 没有新值,先用旧值将就用吧,保持im提醒
+            String oldToken = redisTemplate.opsForValue().get(LOGIN_TOKEN_CACHE_KEY);
+            if (oldToken != null) {
+                redisTemplate.opsForValue().set(LOGIN_TOKEN_CACHE_KEY, oldToken, Duration.ofDays(1));
+            }
+
             imService.sendImMsg(StrUtil.format("芥末圈 loginToken 即将过期,当前剩余时间: {} 小时", expire));
         }
         log.info("芥末圈 loginToken 当前剩余时间: {} 小时", expire);

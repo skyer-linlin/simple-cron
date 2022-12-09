@@ -4,10 +4,7 @@ package com.lin.simplecron.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -29,7 +26,7 @@ public class ScheduledTaskConfig {
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 设置核心线程数
-        executor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
+        executor.setCorePoolSize(Runtime.getRuntime().availableProcessors() * 2);
         // 设置最大线程数
         executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 10);
         // 设置队列容量
