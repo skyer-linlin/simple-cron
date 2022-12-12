@@ -85,13 +85,11 @@ public class CoinGlassService {
         for (CexFundingRateVO cexFundingRateVO : vo.getUMarginList()) {
             switch (Constants.Cex.nameOf(cexFundingRateVO.getExchangeName())) {
                 case BINANCE -> umarginFundingRate.setBinance(cexFundingRateVO.getRate());
-                case BITMEX -> umarginFundingRate.setBitmex(cexFundingRateVO.getRate());
-                case OKEX -> umarginFundingRate.setOkex(cexFundingRateVO.getRate());
+                case OKEX -> umarginFundingRate.setOkex(cexFundingRateVO.getPredictedRate());
                 case BYBIT -> umarginFundingRate.setBybit(cexFundingRateVO.getRate());
-                case GATE -> umarginFundingRate.setGate(cexFundingRateVO.getRate());
-                case DERIBIT -> umarginFundingRate.setDeribit(cexFundingRateVO.getRate());
+                case GATE -> umarginFundingRate.setGate(cexFundingRateVO.getPredictedRate());
                 case BITGET -> umarginFundingRate.setBitget(cexFundingRateVO.getRate());
-                case COIN_EX -> umarginFundingRate.setCoinex(cexFundingRateVO.getRate());
+                case COIN_EX -> umarginFundingRate.setCoinex(cexFundingRateVO.getPredictedRate());
                 default -> {
                 }
             }
@@ -105,15 +103,14 @@ public class CoinGlassService {
         cmarginFundingRate.setDatetime(dateTime);
         cmarginFundingRate.setCPrice(vo.getCPrice());
         for (CexFundingRateVO cexFundingRateVO : vo.getCMarginList()) {
+            // 对 okx gate coinex bitmex 要看预测费率更能反映多空资金面情况
             switch (Constants.Cex.nameOf(cexFundingRateVO.getExchangeName())) {
                 case BINANCE -> cmarginFundingRate.setBinance(cexFundingRateVO.getRate());
-                case BITMEX -> cmarginFundingRate.setBitmex(cexFundingRateVO.getRate());
-                case OKEX -> cmarginFundingRate.setOkex(cexFundingRateVO.getRate());
+                case OKEX -> cmarginFundingRate.setOkex(cexFundingRateVO.getPredictedRate());
+                case BITMEX -> cmarginFundingRate.setBitmex(cexFundingRateVO.getPredictedRate());
                 case BYBIT -> cmarginFundingRate.setBybit(cexFundingRateVO.getRate());
-                case GATE -> cmarginFundingRate.setGate(cexFundingRateVO.getRate());
                 case DERIBIT -> cmarginFundingRate.setDeribit(cexFundingRateVO.getRate());
-                case BITGET -> cmarginFundingRate.setBitget(cexFundingRateVO.getRate());
-                case COIN_EX -> cmarginFundingRate.setCoinex(cexFundingRateVO.getRate());
+                case COIN_EX -> cmarginFundingRate.setCoinex(cexFundingRateVO.getPredictedRate());
                 default -> {
                 }
             }

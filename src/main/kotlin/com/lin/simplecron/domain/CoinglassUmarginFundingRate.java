@@ -42,12 +42,6 @@ public class CoinglassUmarginFundingRate implements Serializable {
     private Double binance;
 
     /**
-     * bitmex
-     */
-    @Column(name = "bitmex")
-    private Double bitmex;
-
-    /**
      * okex
      */
     @Column(name = "okex")
@@ -64,12 +58,6 @@ public class CoinglassUmarginFundingRate implements Serializable {
      */
     @Column(name = "gate")
     private Double gate;
-
-    /**
-     * deribit
-     */
-    @Column(name = "deribit")
-    private Double deribit;
 
     /**
      * bitget
