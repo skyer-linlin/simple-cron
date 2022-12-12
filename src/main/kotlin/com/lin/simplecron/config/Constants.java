@@ -20,7 +20,7 @@ public interface Constants {
     enum Cex {
         BINANCE("Binance"),
         BITMEX("Bitmex"),
-        OKEX("Okex"),
+        OKEX("OKX"),
         BYBIT("Bybit"),
         GATE("Gate"),
         DERIBIT("Deribit"),
